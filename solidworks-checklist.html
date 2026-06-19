@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Modelleme Pratik Defteri · SolidWorks</title>
+<style>
+  :root {
+    --bg:        #0a1a2f;
+    --surface:   #102744;
+    --surface-2: #0c1f39;
+    --inset:     #0a1c33;
+    --border:    #1d3a5c;
+    --border-2:  #284d76;
+    --ink:       #dce9f7;
+    --muted:     #6e90b8;
+    --faint:     #4d6a8e;
+    --accent:    #4cc9f0;
+
+    --l1: #2dd4bf;  /* teal  */
+    --l2: #38bdf8;  /* sky   */
+    --l3: #818cf8;  /* indigo*/
+    --l4: #fbbf24;  /* amber */
+    --l5: #fb7185;  /* rose  */
+
+    --s0: #5a7a9c;  /* başlanmadı */
+    --s1: #38bdf8;  /* modelliyorum */
+    --s2: #a78bfa;  /* model tamam */
+    --s3: #fbbf24;  /* render */
+    --s4: #34d399;  /* tamamlandı */
+    --gold: #fbbf24;
+
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--sans);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    color: var(--ink);
+    line-height: 1.6;
+    background-color: var(--bg);
+    /* signature: blueprint / graph-paper grid */
+    background-image:
+      linear-gradient(rgba(76,201,240,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(76,201,240,0.045) 1px, transparent 1px);
+    background-size: 26px 26px;
+    background-position: -1px -1px;
+  }
+
+  /* ── Title block (technical-drawing corner) ── */
+  .title-block {
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(76,201,240,0.06), transparent 60%), var(--surface);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .title-block::before {
+    content: "";
+    position: absolute; inset: 5px;
+    border: 1px solid rgba(76,201,240,0.12);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.35rem;
+  }
+  h1 {
+    font-family: var(--mono);
+    font-size: 1.55rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .intro { color: var(--muted); margin: 0.5rem 0 0; font-size: 0.92rem; max-width: 62ch; }
+
+  /* ── Auth bar ── */
+  .auth-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.75rem; flex-wrap: wrap;
+    padding: 0.55rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .auth-info { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; }
+  .auth-info img { width: 28px; height: 28px; border-radius: 3px; }
+  .sync-status { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+  .sync-status.saving { color: var(--gold); }
+  .sync-status.saved  { color: var(--s4); }
+  .sync-status.error  { color: var(--l5); }
+  .auth-btn {
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--border-2);
+    padding: 0.45rem 0.9rem;
+    border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+    font-family: var(--mono);
+  }
+  .auth-btn:hover { background: var(--border); border-color: var(--accent); }
+  .auth-btn.primary { background: var(--accent); color: #05223a; border-color: var(--accent); font-weight: 600; }
+  .auth-btn.primary:hover { filter: brightness(1.1); }
+
+  /* ── Login gate ── */
+  .login-gate {
+    text-align: center; padding: 3rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px; margin: 2rem 0;
+  }
+  .login-gate h2 { margin-top: 0; border: none; background: none; padding: 0; display: block; font-family: var(--mono); }
+  .login-gate p { color: var(--muted); max-width: 460px; margin: 0.5rem auto 1.5rem; }
+
+  #appContent { display: none; }
+  #appContent.visible { display: block; }
+  .login-gate.hidden { display: none; }
+
+  /* ── Progress ── */
+  .progress-bar {
+    background: var(--inset);
+    border: 1px solid var(--border);
+    border-radius: 3px; height: 22px; overflow: hidden; margin-bottom: 0.5rem;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, var(--accent), var(--l1));
+    height: 100%; width: 0; transition: width 0.35s ease;
+  }
+  .progress-text { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+
+  .status-legend {
+    display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+    margin-bottom: 1.5rem; padding: 0.55rem 0.8rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  }
+  .status-legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 0.35rem; vertical-align: middle; }
+  .status-legend span { white-space: nowrap; }
+
+  /* ── Level headers ── */
+  h2 {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    margin-top: 2.4rem; padding: 0.55rem 0.9rem;
+    border-radius: 3px; display: flex; align-items: center; gap: 0.5rem;
+    border-left: 3px solid var(--border-2);
+  }
+  h2 .lv { font-size: 0.72rem; letter-spacing: 0.15em; opacity: 0.75; }
+  h2.level-1 { background: rgba(45,212,191,0.12);  border-left-color: var(--l1); }
+  h2.level-2 { background: rgba(56,189,248,0.12);  border-left-color: var(--l2); }
+  h2.level-3 { background: rgba(129,140,248,0.12); border-left-color: var(--l3); }
+  h2.level-4 { background: rgba(251,191,36,0.12);  border-left-color: var(--l4); }
+  h2.level-5 { background: rgba(251,113,133,0.12); border-left-color: var(--l5); }
+  .level-desc {
+    color: var(--muted); font-size: 0.88rem;
+    margin: -0.35rem 0 1rem; padding-left: 0.95rem;
+    border-left: 1px dashed var(--border); 
+  }
+  .level-desc .skill { color: var(--accent); font-family: var(--mono); font-size: 0.82rem; }
+
+  ul { list-style: none; padding-left: 0; }
+  li.task {
+    margin: 0.3rem 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 3px;
+    transition: border-color 0.2s, background 0.2s;
+    overflow: hidden;
+  }
+  li.task:hover { border-color: var(--border-2); }
+  li.task[data-status="0"] { border-left-color: var(--s0); }
+  li.task[data-status="1"] { border-left-color: var(--s1); }
+  li.task[data-status="2"] { border-left-color: var(--s2); }
+  li.task[data-status="3"] { border-left-color: var(--s3); }
+  li.task[data-status="4"] { border-left-color: var(--s4); background: rgba(52,211,153,0.07); }
+  li.task[data-status="4"] .label { color: var(--muted); }
+
+  .task-header {
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    padding: 0.5rem 0.75rem; cursor: pointer; user-select: none;
+  }
+  .task-header:hover { background: rgba(76,201,240,0.04); }
+  .label { flex: 1; min-width: 200px; }
+  .label .tech { display: block; font-family: var(--mono); font-size: 0.72rem; color: var(--faint); margin-top: 1px; }
+  .rating-badge { font-family: var(--mono); font-size: 0.78rem; color: var(--gold); white-space: nowrap; }
+
+  .status-select {
+    background: var(--surface-2); color: var(--ink);
+    border: 1px solid var(--border-2); border-radius: 3px;
+    padding: 0.25rem 0.5rem; font-size: 0.78rem; cursor: pointer; font-family: var(--mono);
+  }
+  .status-select:hover, .status-select:focus { outline: none; border-color: var(--accent); }
+  .status-select[data-status="0"] { color: var(--muted); }
+  .status-select[data-status="1"] { color: var(--s1); }
+  .status-select[data-status="2"] { color: var(--s2); }
+  .status-select[data-status="3"] { color: var(--s3); }
+  .status-select[data-status="4"] { color: var(--s4); }
+
+  .date { font-family: var(--mono); font-size: 0.72rem; color: var(--faint); white-space: nowrap; }
+  .expand-btn {
+    background: transparent; border: 1px solid var(--border-2); color: var(--muted);
+    padding: 0.2rem 0.6rem; border-radius: 3px; font-size: 0.78rem; cursor: pointer;
+    font-family: var(--mono); white-space: nowrap; transition: all 0.2s;
+  }
+  .expand-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .expand-btn.has-content { color: var(--s4); border-color: rgba(52,211,153,0.5); }
+
+  .blog-section {
+    display: none; padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border); background: var(--inset);
+  }
+  .blog-section.open { display: block; }
+  .blog-section h4 {
+    margin: 0 0 0.5rem 0; color: var(--muted); font-family: var(--mono);
+    font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .blog-section h4:not(:first-child) { margin-top: 1.5rem; }
+
+  .eval-panel {
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.22);
+    border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: 0.5rem;
+  }
+  .eval-panel.locked { opacity: 0.55; }
+  .eval-locked-msg { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+  .eval-title { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem 0 !important; color: var(--gold) !important; }
+  .rating-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; flex-wrap: wrap; }
+  .rating-label { font-size: 0.9rem; color: var(--ink); flex: 1; min-width: 160px; }
+  .rating-label small { display: block; color: var(--faint); font-size: 0.72rem; font-weight: normal; }
+  .stars { display: inline-flex; gap: 0.15rem; font-size: 1.4rem; line-height: 1; }
+  .star { cursor: pointer; color: var(--border-2); transition: color 0.15s, transform 0.1s; user-select: none; }
+  .eval-panel.locked .star { cursor: default; }
+  .star.filled { color: var(--gold); }
+  .star:hover { transform: scale(1.15); }
+  .star.clear-star { font-size: 0.82rem; color: var(--faint); margin-left: 0.3rem; align-self: center; }
+  .star.clear-star:hover { color: var(--l5); transform: none; }
+  .eval-summary { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(251,191,36,0.18); font-size: 0.85rem; color: var(--muted); }
+  .eval-summary strong { color: var(--gold); }
+
+  .thoughts-editor, .notes-editor {
+    width: 100%; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border-2); border-radius: 4px; padding: 0.75rem;
+    font-family: inherit; font-size: 0.95rem; line-height: 1.5; resize: vertical;
+  }
+  .thoughts-editor { min-height: 80px; margin-top: 0.5rem; }
+  .notes-editor { min-height: 120px; }
+  .thoughts-editor:focus, .notes-editor:focus { outline: none; border-color: var(--accent); }
+  .notes-preview { background: var(--surface); border: 1px solid var(--border-2); border-radius: 4px; padding: 0.75rem 1rem; min-height: 120px; }
+  .notes-preview:empty::before { content: 'Henüz not yok.'; color: var(--faint); font-style: italic; }
+  .notes-preview p { margin: 0.4rem 0; }
+  .notes-preview code { background: var(--inset); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.9em; font-family: var(--mono); }
+  .notes-preview pre { background: var(--inset); padding: 0.75rem; border-radius: 4px; overflow-x: auto; }
+  .notes-preview h3, .notes-preview h4 { margin: 0.8rem 0 0.4rem 0; }
+  .notes-preview a { color: var(--accent); }
+  .notes-hint { font-family: var(--mono); font-size: 0.72rem; color: var(--faint); margin-top: 0.25rem; }
+  .editor-tabs { display: flex; gap: 0.25rem; margin-bottom: 0.5rem; }
+  .tab-btn {
+    background: var(--surface); color: var(--muted); border: 1px solid var(--border-2);
+    padding: 0.3rem 0.8rem; border-radius: 3px 3px 0 0; cursor: pointer;
+    font-size: 0.82rem; border-bottom: none; font-family: var(--mono);
+  }
+  .tab-btn.active { background: var(--inset); color: var(--ink); border-color: var(--accent); }
+
+  .status-history { font-family: var(--mono); font-size: 0.74rem; color: var(--faint); padding: 0.5rem 0.75rem; background: var(--surface); border-radius: 3px; }
+  .status-history-item { display: block; padding: 0.15rem 0; }
+  .status-history strong { color: var(--muted); }
+
+  .images-area { margin-top: 1.5rem; }
+  .image-controls { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .add-image-btn {
+    background: var(--surface-2); color: var(--ink); border: 1px dashed var(--border-2);
+    padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: var(--mono);
+  }
+  .add-image-btn:hover { border-color: var(--accent); border-style: solid; }
+  .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+  .image-tile { position: relative; aspect-ratio: 1; background: var(--surface); border: 1px solid var(--border-2); border-radius: 4px; overflow: hidden; cursor: pointer; }
+  .image-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .image-tile .delete-img {
+    position: absolute; top: 4px; right: 4px; background: rgba(251,113,133,0.92); color: #fff;
+    border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.9rem;
+    line-height: 1; opacity: 0; transition: opacity 0.2s; padding: 0;
+  }
+  .image-tile:hover .delete-img { opacity: 1; }
+  .image-tile .img-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff;
+    padding: 1.5rem 0.5rem 0.4rem; font-size: 0.75rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+  }
+
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(5,12,22,0.94); z-index: 1000; align-items: center; justify-content: center; padding: 2rem; flex-direction: column; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: 4px; }
+  .lightbox-caption { color: var(--ink); margin-top: 1rem; text-align: center; max-width: 80%; }
+  .lightbox-close { position: absolute; top: 1rem; right: 1.5rem; color: #fff; background: transparent; border: none; font-size: 2rem; cursor: pointer; }
+
+  .controls { margin: 2rem 0 1rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  button.action {
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--border-2);
+    padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: var(--mono);
+  }
+  button.action:hover { background: var(--border); border-color: var(--accent); }
+  button.action.danger:hover { background: rgba(251,113,133,0.2); border-color: var(--l5); }
+
+  .notes-footer { margin-top: 3rem; padding: 1rem 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+  .notes-footer h3 { margin-top: 0; font-family: var(--mono); }
+  .notes-footer ul li { background: transparent; border: none; cursor: default; padding: 0.25rem 0; display: list-item; list-style: square; margin-left: 1.5rem; }
+  code.inline { background: var(--inset); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.9em; font-family: var(--mono); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="title-block">
+  <p class="eyebrow">Teknik Pratik · CAD</p>
+  <h1>3D Modelleme Pratik Defteri</h1>
+  <p class="intro">SolidWorks öğrenirken pratiğe dökeceğin parçalar — kolaydan zora. Bir parça seç, modelle, durumunu güncelle; not ve ekran görüntüsü ekle, bitince ⭐ ile değerlendir. Her şey buluta kaydedilir ve cihazların arasında senkronlanır.</p>
+</div>
+
+<!-- Auth bar -->
+<div class="auth-bar" id="authBar" style="display:none">
+  <div class="auth-info">
+    <img id="userPhoto" src="" alt="">
+    <span id="userName"></span>
+    <span class="sync-status" id="syncStatus"></span>
+  </div>
+  <button class="auth-btn" id="logoutBtn">Çıkış Yap</button>
+</div>
+
+<!-- Login gate -->
+<div class="login-gate" id="loginGate">
+  <h2>Giriş Yap</h2>
+  <p>İlerlemeni buluta kaydetmek ve tüm cihazlarından erişmek için Google hesabınla giriş yap. Yalnızca senin verilerin, yalnızca sana görünür.</p>
+  <button class="auth-btn primary" id="loginBtn">Google ile Giriş Yap</button>
+  <div id="loginError" style="color:var(--l5); margin-top:1rem; font-size:0.85rem;"></div>
+</div>
+
+<!-- App content -->
+<div id="appContent">
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">0 / 0 tamamlandı</div>
+
+  <div class="status-legend">
+    <span><span class="dot" style="background:var(--s0)"></span>Başlanmadı</span>
+    <span><span class="dot" style="background:var(--s1)"></span>Modelliyorum</span>
+    <span><span class="dot" style="background:var(--s2)"></span>Model tamamlandı</span>
+    <span><span class="dot" style="background:var(--s3)"></span>Render / teknik resim aldım</span>
+    <span><span class="dot" style="background:var(--s4)"></span>Tamamlandı</span>
+  </div>
+
+  <div class="controls">
+    <button class="action" onclick="exportData()">↓ Yedek İndir (JSON)</button>
+    <button class="action" onclick="document.getElementById('importFile').click()">↑ Yedekten Yükle</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="action danger" onclick="resetAll()">✕ Tümünü Sıfırla</button>
+  </div>
+
+  <h2 class="level-1"><span class="lv">LV·1</span> Temeller</h2>
+  <p class="level-desc">2B çizim, ölçülendirme ve katı oluşturma. Workflow'u oturtmak için ideal. <span class="skill">sketch · extrude · fillet · chamfer</span></p>
+  <ul data-level="1" class="task-list">
+    <li data-key="Dikdörtgen plaka"><span class="label">Delikli dikdörtgen plaka<span class="tech">sketch · extrude boss · extrude cut</span></span></li>
+    <li data-key="L-bracket"><span class="label">L-köşebent (L-bracket)<span class="tech">çoklu yüzey · dik açılı geometri</span></span></li>
+    <li data-key="Rondela"><span class="label">Rondela / pul (washer)<span class="tech">ortak merkezli daireler · simetri</span></span></li>
+    <li data-key="Isimlik"><span class="label">İsimlik / anahtarlık (yazılı)<span class="tech">text aracı · emboss / cut</span></span></li>
+    <li data-key="Spacer"><span class="label">Silindirik ara parça (spacer / burç)<span class="tech">temel ölçü zinciri</span></span></li>
+    <li data-key="Pahli kup"><span class="label">Köşeleri pahlı / yuvarlatılmış küp<span class="tech">fillet · chamfer</span></span></li>
+  </ul>
+
+  <h2 class="level-2"><span class="lv">LV·2</span> Şekil Verme</h2>
+  <p class="level-desc">Dönel parçalar, tekrarlayan geometriler ve aynalama. <span class="skill">revolve · pattern · mirror · shell</span></p>
+  <ul data-level="2" class="task-list">
+    <li data-key="Kadeh"><span class="label">Bardak / kadeh<span class="tech">revolve — profili eksende döndürme</span></span></li>
+    <li data-key="Sise"><span class="label">Şişe<span class="tech">revolve + shell (içini boşaltma)</span></span></li>
+    <li data-key="Huni"><span class="label">Huni<span class="tech">revolve + shell · et kalınlığı</span></span></li>
+    <li data-key="Perfore plaka"><span class="label">Delik tablası / perfore plaka<span class="tech">linear pattern</span></span></li>
+    <li data-key="Duz disli"><span class="label">Düz dişli (basitleştirilmiş)<span class="tech">circular pattern</span></span></li>
+    <li data-key="Telefon standi"><span class="label">Telefon standı<span class="tech">açılı yüzeyler · mirror</span></span></li>
+    <li data-key="Zar"><span class="label">Zar (dice)<span class="tech">yüzeye sketch · çoklu cut pattern</span></span></li>
+  </ul>
+
+  <h2 class="level-3"><span class="lv">LV·3</span> İleri Katı Modelleme</h2>
+  <p class="level-desc">Yol boyunca süpürme, kesitler arası geçiş ve yapısal detaylar. <span class="skill">sweep · loft · helix · rib · thread</span></p>
+  <ul data-level="3" class="task-list">
+    <li data-key="Yay"><span class="label">Yay (spring)<span class="tech">helix + sweep</span></span></li>
+    <li data-key="Civata somun"><span class="label">Cıvata ve somun (vida dişli)<span class="tech">thread aracı / helix sweep</span></span></li>
+    <li data-key="Boru dirsegi"><span class="label">Boru dirseği (pipe elbow)<span class="tech">sweep — eğri yol boyunca</span></span></li>
+    <li data-key="Gecis adaptoru"><span class="label">Geçiş adaptörü (kareden yuvarlağa)<span class="tech">loft</span></span></li>
+    <li data-key="Flans"><span class="label">Flanş (cıvata deliği desenli)<span class="tech">revolve + circular pattern + counterbore</span></span></li>
+    <li data-key="Ribli braket"><span class="label">Destekli braket (ribli)<span class="tech">rib — kaburga özelliği</span></span></li>
+    <li data-key="Ergonomik tutamak"><span class="label">Ergonomik tutamak / kol<span class="tech">loft / sweep ile organik form</span></span></li>
+  </ul>
+
+  <h2 class="level-4"><span class="lv">LV·4</span> Karmaşık Tek Parçalar</h2>
+  <p class="level-desc">Gerçek mühendislik parçaları + yüzey modellemeye giriş. <span class="skill">multi-feature · surfacing · feature tree yönetimi</span></p>
+  <ul data-level="4" class="task-list">
+    <li data-key="Ingiliz anahtari"><span class="label">İngiliz anahtarı (wrench)<span class="tech">çoklu sketch düzlemi · simetri · fillet zinciri</span></span></li>
+    <li data-key="Piston"><span class="label">Piston<span class="tech">silindirik geometri · segman kanalları</span></span></li>
+    <li data-key="Pervane"><span class="label">Pervane / fan kanadı<span class="tech">circular pattern · eğimli yüzeyler</span></span></li>
+    <li data-key="Mouse govdesi"><span class="label">Bilgisayar faresi gövdesi<span class="tech">surfacing'e giriş</span></span></li>
+    <li data-key="Kask"><span class="label">Kask / kulaklık kabuğu<span class="tech">loft + surface + shell</span></span></li>
+    <li data-key="Motor blogu"><span class="label">Basitleştirilmiş motor bloğu<span class="tech">çok feature'lı düzenli ağaç</span></span></li>
+  </ul>
+
+  <h2 class="level-5"><span class="lv">LV·5</span> Montaj &amp; Teknik Resim</h2>
+  <p class="level-desc">Parçaları birleştir, hareketi simüle et, üretim için 2B resim çıkar. CAD'in asıl gücü burada. <span class="skill">assembly · mate · motion · drawing</span></p>
+  <ul data-level="5" class="task-list">
+    <li data-key="Civata montaji"><span class="label">Cıvata–somun–rondela montajı<span class="tech">mate — temel ilişki tanımlama</span></span></li>
+    <li data-key="Mentese"><span class="label">Menteşe (hinge)<span class="tech">concentric + coincident · hareketli eklem</span></span></li>
+    <li data-key="Disli kutusu"><span class="label">Basit dişli kutusu / redüktör<span class="tech">gear mate</span></span></li>
+    <li data-key="4 cubuk mekanizma"><span class="label">4 çubuk / krank-biyel mekanizması<span class="tech">motion study — hareket simülasyonu</span></span></li>
+    <li data-key="Teknik resim"><span class="label">Bir parçanın teknik resmini çıkar<span class="tech">drawing · görünüş · kesit · ölçü · antet</span></span></li>
+    <li data-key="Mini urun"><span class="label">Tam mini ürün (mengene / katlanır stand)<span class="tech">tüm becerilerin birleşimi</span></span></li>
+  </ul>
+
+  <div class="notes-footer">
+    <h3>Nasıl çalışır?</h3>
+    <ul>
+      <li><strong>Senkron:</strong> tüm değişiklikler otomatik buluta kaydedilir; başka cihazdan girince aynı veriyi görürsün.</li>
+      <li><strong>⭐ Değerlendirme:</strong> parça "Tamamlandı" durumuna geçince yıldız puanlama açılır.</li>
+      <li><strong>Notlar markdown destekler:</strong> <code class="inline">**kalın**</code>, <code class="inline">*italik*</code>, <code class="inline">`kod`</code>, <code class="inline">### başlık</code>, <code class="inline">- liste</code>.</li>
+      <li><strong>Ekran görüntüleri</strong> 1200px'e küçültülüp buluta kaydedilir — her parçaya birkaç görsel rahat sığar.</li>
+      <li><strong>Yedek:</strong> "Yedek İndir" ile her şeyin JSON kopyasını alabilirsin.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // ─── Firebase config ────────────────────────────
+  // Aynı Firebase projesi kullanılıyor; veriler ayrı bir koleksiyonda tutulduğu
+  // için PCB listesiyle karışmaz. İstersen kendi projeni de bağlayabilirsin.
+  const firebaseConfig = {
+    apiKey: "AIzaSyCj1YOoljWefh3oFdxsG6Z0rg9XlHPR3Eg",
+    authDomain: "pcb-rutini.firebaseapp.com",
+    projectId: "pcb-rutini",
+    storageBucket: "pcb-rutini.firebasestorage.app",
+    messagingSenderId: "447336025582",
+    appId: "1:447336025582:web:e0bf15b6abb990657d12ff",
+    measurementId: "G-NST11BDRHP"
+  };
+
+  // Veri buraya yazılır: users/{uid}/solidworks_tasks/{taskKey}
+  const COLLECTION = "solidworks_tasks";
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  let currentUser = null;
+  let state = {};
+
+  const STATUSES = [
+    { value: 0, label: 'Başlanmadı' },
+    { value: 1, label: 'Modelliyorum' },
+    { value: 2, label: 'Model tamamlandı' },
+    { value: 3, label: 'Render / teknik resim aldım' },
+    { value: 4, label: 'Tamamlandı' }
+  ];
+  const DONE_STATUS = 4;
+  const MAX_IMAGE_DIM = 1200;
+
+  const RATING_DIMS = [
+    { key: 'difficulty', label: 'Zorluk',          desc: 'Ne kadar zorlayıcıydı?' },
+    { key: 'learning',   label: 'Öğrenme Değeri',   desc: 'Yeni hangi teknikleri öğrendin?' },
+    { key: 'quality',    label: 'Model Kalitesi',   desc: 'Feature ağacı düzeni, temiz ve parametrik modelleme' },
+    { key: 'enjoyment',  label: 'Keyif / Tatmin',   desc: 'Yaparken ne kadar keyif aldın?' }
+  ];
+
+  // ─── Sync status indicator ──────────────────────
+  let syncTimeout;
+  function setSyncStatus(stateStr) {
+    const el = document.getElementById('syncStatus');
+    el.className = 'sync-status ' + stateStr;
+    if (stateStr === 'saving') el.textContent = '⟳ kaydediliyor...';
+    else if (stateStr === 'saved') {
+      el.textContent = '✓ kaydedildi';
+      clearTimeout(syncTimeout);
+      syncTimeout = setTimeout(() => { el.textContent = ''; }, 2000);
+    }
+    else if (stateStr === 'error') el.textContent = '⚠ kayıt hatası';
+    else el.textContent = '';
+  }
+
+  // ─── Firestore helpers ──────────────────────────
+  function tasksCol() {
+    return db.collection('users').doc(currentUser.uid).collection(COLLECTION);
+  }
+
+  function getTaskData(key) {
+    const d = state[key] || {};
+    return {
+      status: d.status || 0,
+      statusHistory: d.statusHistory || [],
+      notes: d.notes || '',
+      images: d.images || [],
+      ratings: d.ratings || {},
+      thoughts: d.thoughts || ''
+    };
+  }
+
+  async function setTaskData(key, data) {
+    state[key] = data;
+    setSyncStatus('saving');
+    try {
+      const docId = encodeURIComponent(key);
+      await tasksCol().doc(docId).set(data);
+      setSyncStatus('saved');
+    } catch (e) {
+      console.error('save error', e);
+      setSyncStatus('error');
+      alert('Kayıt hatası: ' + e.message + '\n\nMuhtemelen görsel çok büyük (Firestore doküman sınırı ~1MB). Daha küçük bir resim dene.');
+    }
+  }
+
+  // ─── Markdown ───────────────────────────────────
+  function renderMarkdown(text) {
+    if (!text) return '';
+    let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = html.replace(/```([\s\S]*?)```/g, (m, c) => '<pre><code>' + c + '</code></pre>');
+    html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*?<\/li>\n?)+/g, m => '<ul>' + m + '</ul>');
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    html = html.replace(/\n\n+/g, '</p><p>');
+    html = html.replace(/\n/g, '<br>');
+    return '<p>' + html + '</p>';
+  }
+
+  // ─── Images ─────────────────────────────────────
+  function resizeImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Dosya okunamadı'));
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Resim yüklenemedi'));
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > MAX_IMAGE_DIM || height > MAX_IMAGE_DIM) {
+            const ratio = Math.min(MAX_IMAGE_DIM / width, MAX_IMAGE_DIM / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function addImage(key, file) {
+    try {
+      const dataUrl = await resizeImage(file);
+      const caption = prompt('Bu görsel için kısa bir açıklama (boş bırakabilirsin):', '') || '';
+      const data = getTaskData(key);
+      data.images.push({ src: dataUrl, caption: caption, added: new Date().toISOString() });
+      await setTaskData(key, data);
+      renderImages(key);
+      updateExpandButton(key);
+    } catch (err) {
+      alert('Resim yüklenemedi: ' + err.message);
+    }
+  }
+
+  async function deleteImage(key, index) {
+    if (!confirm('Bu görsel silinsin mi?')) return;
+    const data = getTaskData(key);
+    data.images.splice(index, 1);
+    await setTaskData(key, data);
+    renderImages(key);
+    updateExpandButton(key);
+  }
+
+  function renderImages(key) {
+    const grid = document.querySelector(`li[data-key="${CSS.escape(key)}"] .image-grid`);
+    if (!grid) return;
+    const data = getTaskData(key);
+    grid.innerHTML = '';
+    data.images.forEach((img, i) => {
+      const tile = document.createElement('div');
+      tile.className = 'image-tile';
+      const safeCaption = (img.caption || '').replace(/</g, '&lt;');
+      tile.innerHTML = `
+        <img src="${img.src}" alt="">
+        ${img.caption ? `<div class="img-caption">${safeCaption}</div>` : ''}
+        <button class="delete-img" title="Sil">×</button>
+      `;
+      tile.querySelector('img').addEventListener('click', () => openLightbox(img.src, img.caption));
+      tile.querySelector('.delete-img').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteImage(key, i);
+      });
+      grid.appendChild(tile);
+    });
+  }
+
+  // ─── Lightbox ───────────────────────────────────
+  function openLightbox(src, caption) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxCaption').textContent = caption || '';
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(e) {
+    if (e && e.target.tagName === 'IMG') return;
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // ─── Status history ─────────────────────────────
+  function renderStatusHistory(key) {
+    const data = getTaskData(key);
+    const container = document.querySelector(`li[data-key="${CSS.escape(key)}"] .status-history`);
+    if (!container) return;
+    const history = data.statusHistory || [];
+    if (history.length === 0) { container.innerHTML = '<em>Henüz durum değişikliği yok.</em>'; return; }
+    container.innerHTML = '<strong>Durum geçmişi:</strong>' +
+      history.map(h => {
+        const label = STATUSES.find(s => s.value === h.status)?.label || '?';
+        return `<span class="status-history-item">→ ${label} <em>(${h.date})</em></span>`;
+      }).join('');
+  }
+
+  // ─── Rating ─────────────────────────────────────
+  function renderStars(container, value) {
+    container.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+      const star = document.createElement('span');
+      star.className = 'star' + (i <= value ? ' filled' : '');
+      star.textContent = '★';
+      star.dataset.val = i;
+      container.appendChild(star);
+    }
+    if (value > 0) {
+      const clear = document.createElement('span');
+      clear.className = 'star clear-star';
+      clear.textContent = '✕ sil';
+      clear.title = 'Puanı sıfırla';
+      clear.dataset.val = 0;
+      container.appendChild(clear);
+    }
+  }
+  function computeAvg(ratings) {
+    const vals = RATING_DIMS.map(d => ratings[d.key]).filter(v => v > 0);
+    if (vals.length === 0) return null;
+    return vals.reduce((a, b) => a + b, 0) / vals.length;
+  }
+  function updateEvalSummary(key) {
+    const data = getTaskData(key);
+    const summary = document.querySelector(`li[data-key="${CSS.escape(key)}"] .eval-summary`);
+    if (!summary) return;
+    const avg = computeAvg(data.ratings);
+    if (avg === null) summary.innerHTML = '<em>Henüz puanlama yapılmadı.</em>';
+    else {
+      const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+      summary.innerHTML = `Ortalama: <strong>${avg.toFixed(1)} / 5</strong> &nbsp; <span style="color:var(--gold)">${stars}</span>`;
+    }
+  }
+  function updateRatingBadge(key) {
+    const data = getTaskData(key);
+    const badge = document.querySelector(`li[data-key="${CSS.escape(key)}"] .rating-badge`);
+    if (!badge) return;
+    const avg = computeAvg(data.ratings);
+    badge.textContent = avg !== null ? `★ ${avg.toFixed(1)}` : '';
+  }
+  async function setRating(key, dimKey, value) {
+    const data = getTaskData(key);
+    if (value === 0) delete data.ratings[dimKey];
+    else data.ratings[dimKey] = value;
+    await setTaskData(key, data);
+    const row = document.querySelector(`li[data-key="${CSS.escape(key)}"] .rating-row[data-dim="${dimKey}"] .stars`);
+    if (row) renderStars(row, data.ratings[dimKey] || 0);
+    updateEvalSummary(key);
+    updateRatingBadge(key);
+  }
+  function setEvalLockState(key) {
+    const data = getTaskData(key);
+    const panel = document.querySelector(`li[data-key="${CSS.escape(key)}"] .eval-panel`);
+    if (!panel) return;
+    const locked = data.status !== DONE_STATUS;
+    panel.classList.toggle('locked', locked);
+    const lockMsg = panel.querySelector('.eval-locked-msg');
+    const body = panel.querySelector('.eval-body');
+    if (lockMsg) lockMsg.style.display = locked ? 'block' : 'none';
+    if (body) body.style.display = locked ? 'none' : 'block';
+  }
+
+  function buildEvalPanel(key) {
+    const data = getTaskData(key);
+    const panel = document.createElement('div');
+    panel.className = 'eval-panel';
+    panel.innerHTML = `
+      <h4 class="eval-title">⭐ Parça Değerlendirmesi</h4>
+      <div class="eval-locked-msg">Bu bölüm parça "Tamamlandı" durumuna geçince aktif olur.</div>
+      <div class="eval-body">
+        ${RATING_DIMS.map(dim => `
+          <div class="rating-row" data-dim="${dim.key}">
+            <span class="rating-label">${dim.label}<small>${dim.desc}</small></span>
+            <span class="stars"></span>
+          </div>
+        `).join('')}
+        <div class="eval-summary"></div>
+        <h4>💭 Düşünceler</h4>
+        <textarea class="thoughts-editor" placeholder="Parçanın son haliyle ilgili genel düşüncelerin... Hangi feature'ı farklı kurardın? Feature ağacı temiz mi çıktı? Bir dahaki sefere neyi denersin?"></textarea>
+      </div>
+    `;
+    RATING_DIMS.forEach(dim => {
+      const starsEl = panel.querySelector(`.rating-row[data-dim="${dim.key}"] .stars`);
+      renderStars(starsEl, data.ratings[dim.key] || 0);
+      starsEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!e.target.dataset.val) return;
+        if (panel.classList.contains('locked')) return;
+        setRating(key, dim.key, parseInt(e.target.dataset.val, 10));
+      });
+    });
+    const thoughts = panel.querySelector('.thoughts-editor');
+    thoughts.value = data.thoughts || '';
+    let tTimer;
+    thoughts.addEventListener('input', () => {
+      clearTimeout(tTimer);
+      tTimer = setTimeout(() => {
+        const d = getTaskData(key);
+        d.thoughts = thoughts.value;
+        setTaskData(key, d);
+      }, 600);
+    });
+    updateEvalSummary(key);
+    return panel;
+  }
+
+  // ─── Blog / detail section ──────────────────────
+  function buildBlogSection(li, key) {
+    const data = getTaskData(key);
+    const section = document.createElement('div');
+    section.className = 'blog-section';
+    section.innerHTML = `
+      <h4>📊 Durum Geçmişi</h4>
+      <div class="status-history"></div>
+      <h4>📝 Notlar</h4>
+      <div class="editor-tabs">
+        <button type="button" class="tab-btn active" data-tab="write">Yaz</button>
+        <button type="button" class="tab-btn" data-tab="preview">Önizle</button>
+      </div>
+      <textarea class="notes-editor" placeholder="Bu parça hakkında notlarını buraya yaz...&#10;&#10;Örn: Hangi feature'ları kullandım, nerede takıldım, hangi sketch'i fully define edemedim, sonraki sefere ne denerim..."></textarea>
+      <div class="notes-preview" style="display:none"></div>
+      <div class="notes-hint">Otomatik kaydedilir • Markdown: **kalın** *italik* \`kod\` ### başlık - liste [link](url)</div>
+      <div class="images-area">
+        <h4>📸 Ekran Görüntüleri</h4>
+        <div class="image-controls">
+          <button type="button" class="add-image-btn">+ Görsel Ekle</button>
+          <input type="file" accept="image/*" multiple style="display:none">
+        </div>
+        <div class="image-grid"></div>
+      </div>
+    `;
+    const evalPanel = buildEvalPanel(key);
+    section.insertBefore(evalPanel, section.firstChild);
+    li.appendChild(section);
+
+    const editor = section.querySelector('.notes-editor');
+    const preview = section.querySelector('.notes-preview');
+    editor.value = data.notes || '';
+
+    section.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.tab === 'preview') {
+          preview.innerHTML = renderMarkdown(editor.value);
+          preview.style.display = 'block';
+          editor.style.display = 'none';
+        } else {
+          preview.style.display = 'none';
+          editor.style.display = 'block';
+        }
+      });
+    });
+
+    let saveTimer;
+    editor.addEventListener('input', () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        const d = getTaskData(key);
+        d.notes = editor.value;
+        setTaskData(key, d);
+        updateExpandButton(key);
+      }, 600);
+    });
+
+    const fileInput = section.querySelector('input[type="file"]');
+    section.querySelector('.add-image-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', async (e) => {
+      for (const file of e.target.files) { await addImage(key, file); }
+      fileInput.value = '';
+    });
+
+    renderImages(key);
+    renderStatusHistory(key);
+    setEvalLockState(key);
+  }
+
+  function updateExpandButton(key) {
+    const data = getTaskData(key);
+    const btn = document.querySelector(`li[data-key="${CSS.escape(key)}"] .expand-btn`);
+    if (!btn) return;
+    const hasNotes = data.notes && data.notes.trim();
+    const imgCount = data.images.length;
+    btn.classList.toggle('has-content', hasNotes || imgCount > 0);
+    btn.textContent = imgCount > 0 ? `📝 Notlar (${imgCount} 📸)` : '📝 Notlar';
+  }
+
+  // ─── Task build ─────────────────────────────────
+  function buildTask(li) {
+    const key = li.dataset.key;
+    const labelHTML = li.querySelector('.label').innerHTML;
+    const data = getTaskData(key);
+
+    li.classList.add('task');
+    li.dataset.status = data.status;
+    li.innerHTML = '';
+
+    const optionsHTML = STATUSES.map(s =>
+      `<option value="${s.value}" ${s.value === data.status ? 'selected' : ''}>${s.label}</option>`
+    ).join('');
+    const lastChange = (data.statusHistory && data.statusHistory.length)
+      ? data.statusHistory[data.statusHistory.length - 1].date : '';
+    const avg = computeAvg(data.ratings);
+
+    const header = document.createElement('div');
+    header.className = 'task-header';
+    header.innerHTML = `
+      <span class="label">${labelHTML}</span>
+      <span class="rating-badge">${avg !== null ? '★ ' + avg.toFixed(1) : ''}</span>
+      <select class="status-select" data-status="${data.status}">${optionsHTML}</select>
+      <span class="date">${lastChange ? '⏱ ' + lastChange : ''}</span>
+      <button type="button" class="expand-btn">📝 Notlar</button>
+    `;
+    li.appendChild(header);
+
+    const select = header.querySelector('.status-select');
+    const dateEl = header.querySelector('.date');
+    const expandBtn = header.querySelector('.expand-btn');
+
+    select.addEventListener('click', e => e.stopPropagation());
+    select.addEventListener('change', async () => {
+      const newStatus = parseInt(select.value, 10);
+      const d = getTaskData(key);
+      if (newStatus === d.status) return;
+      const today = new Date().toLocaleDateString('tr-TR');
+      d.statusHistory.push({ status: newStatus, date: today });
+      d.status = newStatus;
+      await setTaskData(key, d);
+      li.dataset.status = newStatus;
+      select.dataset.status = newStatus;
+      dateEl.textContent = '⏱ ' + today;
+      renderStatusHistory(key);
+      setEvalLockState(key);
+      updateProgress();
+      if (newStatus === DONE_STATUS) li.querySelector('.blog-section').classList.add('open');
+    });
+
+    buildBlogSection(li, key);
+    const blogSection = li.querySelector('.blog-section');
+
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      blogSection.classList.toggle('open');
+    });
+    header.addEventListener('click', (e) => {
+      if (e.target === select || e.target === expandBtn || select.contains(e.target)) return;
+      blogSection.classList.toggle('open');
+    });
+
+    updateExpandButton(key);
+    updateRatingBadge(key);
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('li.task').length;
+    const done = document.querySelectorAll(`li.task[data-status="${DONE_STATUS}"]`).length;
+    const inProgress = document.querySelectorAll('li.task:not([data-status="0"]):not([data-status="' + DONE_STATUS + '"])').length;
+    const pct = all ? (done / all) * 100 : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    const ip = inProgress > 0 ? ` • ${inProgress} devam ediyor` : '';
+    document.getElementById('progressText').textContent =
+      done + ' / ' + all + ' tamamlandı (' + pct.toFixed(0) + '%)' + ip;
+  }
+
+  function buildAllTasks() {
+    document.querySelectorAll('li[data-key]').forEach(li => {
+      if (li.classList.contains('task')) {
+        const label = li.querySelector('.label').innerHTML;
+        li.innerHTML = `<span class="label">${label}</span>`;
+        li.classList.remove('task');
+      }
+      buildTask(li);
+    });
+    updateProgress();
+  }
+
+  // ─── Load all data ──────────────────────────────
+  async function loadAllData() {
+    state = {};
+    const snap = await tasksCol().get();
+    snap.forEach(doc => {
+      const key = decodeURIComponent(doc.id);
+      state[key] = doc.data();
+    });
+  }
+
+  // ─── Reset / Export / Import ────────────────────
+  async function resetAll() {
+    if (!confirm('TÜM ilerleme, notlar, görseller ve değerlendirmeler buluttan silinecek. Emin misin?')) return;
+    if (!confirm('Gerçekten emin misin? Bu işlem geri alınamaz.')) return;
+    setSyncStatus('saving');
+    try {
+      const snap = await tasksCol().get();
+      const batch = db.batch();
+      snap.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+      state = {};
+      buildAllTasks();
+      setSyncStatus('saved');
+    } catch (e) {
+      alert('Silme hatası: ' + e.message);
+      setSyncStatus('error');
+    }
+  }
+  function exportData() {
+    const data = JSON.stringify(state, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'solidworks_rutini_yedek_' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      let imported;
+      try {
+        imported = JSON.parse(e.target.result);
+      } catch {
+        alert('Geçersiz dosya: JSON okunamadı.');
+        return;
+      }
+      const keys = Object.keys(imported);
+      if (keys.length === 0) {
+        alert('Yedek dosyası boş görünüyor.');
+        return;
+      }
+      if (!confirm(`${keys.length} parçanın verisi buluta yüklenecek. Aynı isimli mevcut kayıtların üzerine yazılır. Devam edilsin mi?`)) return;
+
+      setSyncStatus('saving');
+      try {
+        const batch = db.batch();
+        for (const key of keys) {
+          const t = imported[key] || {};
+          const normalized = {
+            status: t.status || 0,
+            statusHistory: t.statusHistory || [],
+            notes: t.notes || '',
+            images: t.images || [],
+            ratings: t.ratings || {},
+            thoughts: t.thoughts || ''
+          };
+          const docId = encodeURIComponent(key);
+          batch.set(tasksCol().doc(docId), normalized);
+          state[key] = normalized;
+        }
+        await batch.commit();
+        setSyncStatus('saved');
+        buildAllTasks();
+        alert('Yedek başarıyla yüklendi! ' + keys.length + ' parça geri getirildi.');
+      } catch (err) {
+        console.error(err);
+        setSyncStatus('error');
+        alert('Yükleme hatası: ' + err.message + '\n\nÇok büyük görseller varsa Firestore sınırına takılmış olabilir.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ─── Auth flow ──────────────────────────────────
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    auth.signInWithPopup(provider).catch(err => {
+      document.getElementById('loginError').textContent = 'Giriş hatası: ' + err.message;
+    });
+  });
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    auth.signOut();
+  });
+
+  auth.onAuthStateChanged(async (user) => {
+    currentUser = user;
+    if (user) {
+      document.getElementById('loginGate').classList.add('hidden');
+      document.getElementById('appContent').classList.add('visible');
+      document.getElementById('authBar').style.display = 'flex';
+      document.getElementById('userName').textContent = user.displayName || user.email;
+      if (user.photoURL) document.getElementById('userPhoto').src = user.photoURL;
+      else document.getElementById('userPhoto').style.display = 'none';
+      try {
+        await loadAllData();
+        buildAllTasks();
+      } catch (e) {
+        console.error(e);
+        alert('Veri yüklenirken hata: ' + e.message);
+      }
+    } else {
+      document.getElementById('loginGate').classList.remove('hidden');
+      document.getElementById('appContent').classList.remove('visible');
+      document.getElementById('authBar').style.display = 'none';
+      state = {};
+    }
+  });
+</script>
+
+</body>
+</html>
