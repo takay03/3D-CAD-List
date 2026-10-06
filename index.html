@@ -780,6 +780,15 @@
     return new Uint8Array(await new Response(s).arrayBuffer());
   }
 
+  // Binary STL: 80 bayt başlık + 4 bayt üçgen sayısı + üçgen başına 50 bayt
+  function stlIsEmpty(u8) {
+    if (u8.length >= 84) {
+      const n = new DataView(u8.buffer, u8.byteOffset, u8.byteLength).getUint32(80, true);
+      if (84 + 50 * n === u8.length) return n === 0;
+    }
+    return !new TextDecoder().decode(u8.subarray(0, 4096)).includes('facet');
+  }
+
   function setModelStatus(key, text) {
     const el = liFor(key)?.querySelector('.model-status');
     if (el) el.textContent = text || '';
@@ -802,6 +811,10 @@
       return;
     }
     const raw = new Uint8Array(await file.arrayBuffer());
+    if (ext === 'stl' && stlIsEmpty(raw)) {
+      alert("Bu STL dosyası boş: içinde hiç üçgen yok.\n\nFreeCAD'de model ağacından Body'yi seçip Dosya → Dışa Aktar → STL ile yeniden dışa aktar. Önerilen dosya adında \"Body\" görünmeli.");
+      return;
+    }
     let payload = raw, gz = false;
     if (typeof CompressionStream !== 'undefined') {
       setModelStatus(key, 'Sıkıştırılıyor…');
@@ -1644,6 +1657,12 @@
       clearScene();
       const { obj, zUp } = await buildObject(buffer, ext);
       if (my !== session) { disposeTree(obj); return; }
+      let tris = 0;
+      obj.traverse(o => { if (o.isMesh) tris += o.geometry.attributes.position?.count || 0; });
+      if (!tris) {
+        disposeTree(obj);
+        throw new Error("dosyada hiç üçgen yok (boş model). FreeCAD'de Body'yi seçip yeniden dışa aktar, sonra Değiştir ile yükle.");
+      }
       place(obj, zUp, ext);
       addEdges();
       applyDisplay();
