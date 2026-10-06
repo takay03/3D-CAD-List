@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Modelleme Pratik Defteri · SolidWorks</title>
+<title>3D Modelleme Pratik Defteri · FreeCAD</title>
 <style>
   :root {
     --bg:        #0a1a2f;
@@ -26,7 +26,7 @@
     --s0: #5a7a9c;  /* başlanmadı */
     --s1: #38bdf8;  /* modelliyorum */
     --s2: #a78bfa;  /* model tamam */
-    --s3: #fbbf24;  /* render */
+    --s3: #fbbf24;  /* görsel / techdraw */
     --s4: #34d399;  /* tamamlandı */
     --gold: #fbbf24;
 
@@ -327,7 +327,7 @@
 <div class="title-block">
   <p class="eyebrow">Teknik Pratik · CAD</p>
   <h1>3D Modelleme Pratik Defteri</h1>
-  <p class="intro">SolidWorks öğrenirken pratiğe dökeceğin parçalar — kolaydan zora. Bir parça seç, modelle, durumunu güncelle; not ve ekran görüntüsü ekle, bitince ⭐ ile değerlendir. Her şey buluta kaydedilir ve cihazların arasında senkronlanır.</p>
+  <p class="intro">FreeCAD öğrenirken pratiğe dökeceğin parçalar — kolaydan zora. Bir parça seç, modelle, durumunu güncelle; not ve ekran görüntüsü ekle, bitince ⭐ ile değerlendir. Her şey buluta kaydedilir ve cihazların arasında senkronlanır.</p>
 </div>
 
 <!-- Auth bar -->
@@ -358,7 +358,7 @@
     <span><span class="dot" style="background:var(--s0)"></span>Başlanmadı</span>
     <span><span class="dot" style="background:var(--s1)"></span>Modelliyorum</span>
     <span><span class="dot" style="background:var(--s2)"></span>Model tamamlandı</span>
-    <span><span class="dot" style="background:var(--s3)"></span>Render / teknik resim aldım</span>
+    <span><span class="dot" style="background:var(--s3)"></span>Görsel / TechDraw aldım</span>
     <span><span class="dot" style="background:var(--s4)"></span>Tamamlandı</span>
   </div>
 
@@ -370,60 +370,60 @@
   </div>
 
   <h2 class="level-1"><span class="lv">LV·1</span> Temeller</h2>
-  <p class="level-desc">2B çizim, ölçülendirme ve katı oluşturma. Workflow'u oturtmak için ideal. <span class="skill">sketch · extrude · fillet · chamfer</span></p>
+  <p class="level-desc">Body mantığı, Sketcher kısıtları ve katı oluşturma. Sketch tamamen kısıtlanınca yeşile döner; bu alışkanlığı burada oturt. <span class="skill">Body · Sketch · Pad · Pocket · Fillet · Chamfer</span></p>
   <ul data-level="1" class="task-list">
-    <li data-key="Dikdörtgen plaka"><span class="label">Delikli dikdörtgen plaka<span class="tech">sketch · extrude boss · extrude cut</span></span></li>
-    <li data-key="L-bracket"><span class="label">L-köşebent (L-bracket)<span class="tech">çoklu yüzey · dik açılı geometri</span></span></li>
-    <li data-key="Rondela"><span class="label">Rondela / pul (washer)<span class="tech">ortak merkezli daireler · simetri</span></span></li>
-    <li data-key="Isimlik"><span class="label">İsimlik / anahtarlık (yazılı)<span class="tech">text aracı · emboss / cut</span></span></li>
-    <li data-key="Spacer"><span class="label">Silindirik ara parça (spacer / burç)<span class="tech">temel ölçü zinciri</span></span></li>
-    <li data-key="Pahli kup"><span class="label">Köşeleri pahlı / yuvarlatılmış küp<span class="tech">fillet · chamfer</span></span></li>
+    <li data-key="Dikdörtgen plaka"><span class="label">Delikli dikdörtgen plaka<span class="tech">Sketch · Pad · Pocket</span></span></li>
+    <li data-key="L-bracket"><span class="label">L-köşebent (L-bracket)<span class="tech">çoklu Pad · yüzeye sketch bağlama (attachment)</span></span></li>
+    <li data-key="Rondela"><span class="label">Rondela / pul (washer)<span class="tech">ortak merkezli daireler · Coincident / Diameter kısıtları</span></span></li>
+    <li data-key="Isimlik"><span class="label">İsimlik / anahtarlık (yazılı)<span class="tech">Draft ShapeString · Pad / Pocket</span></span></li>
+    <li data-key="Spacer"><span class="label">Silindirik ara parça (spacer / burç)<span class="tech">boyut kısıtları · Spreadsheet ile parametrik ölçü</span></span></li>
+    <li data-key="Pahli kup"><span class="label">Köşeleri pahlı / yuvarlatılmış küp<span class="tech">Fillet · Chamfer</span></span></li>
   </ul>
 
   <h2 class="level-2"><span class="lv">LV·2</span> Şekil Verme</h2>
-  <p class="level-desc">Dönel parçalar, tekrarlayan geometriler ve aynalama. <span class="skill">revolve · pattern · mirror · shell</span></p>
+  <p class="level-desc">Dönel parçalar, tekrarlayan geometriler ve aynalama. <span class="skill">Revolution · Groove · LinearPattern · PolarPattern · Mirrored · Thickness</span></p>
   <ul data-level="2" class="task-list">
-    <li data-key="Kadeh"><span class="label">Bardak / kadeh<span class="tech">revolve — profili eksende döndürme</span></span></li>
-    <li data-key="Sise"><span class="label">Şişe<span class="tech">revolve + shell (içini boşaltma)</span></span></li>
-    <li data-key="Huni"><span class="label">Huni<span class="tech">revolve + shell · et kalınlığı</span></span></li>
-    <li data-key="Perfore plaka"><span class="label">Delik tablası / perfore plaka<span class="tech">linear pattern</span></span></li>
-    <li data-key="Duz disli"><span class="label">Düz dişli (basitleştirilmiş)<span class="tech">circular pattern</span></span></li>
-    <li data-key="Telefon standi"><span class="label">Telefon standı<span class="tech">açılı yüzeyler · mirror</span></span></li>
-    <li data-key="Zar"><span class="label">Zar (dice)<span class="tech">yüzeye sketch · çoklu cut pattern</span></span></li>
+    <li data-key="Kadeh"><span class="label">Bardak / kadeh<span class="tech">Revolution — profili eksende döndürme</span></span></li>
+    <li data-key="Sise"><span class="label">Şişe<span class="tech">Revolution + Thickness (içini boşaltma)</span></span></li>
+    <li data-key="Huni"><span class="label">Huni<span class="tech">Revolution + Groove (dönel boşaltma) · et kalınlığı</span></span></li>
+    <li data-key="Perfore plaka"><span class="label">Delik tablası / perfore plaka<span class="tech">LinearPattern · MultiTransform</span></span></li>
+    <li data-key="Duz disli"><span class="label">Düz dişli (basitleştirilmiş)<span class="tech">PolarPattern · kıyas için InvoluteGear aracı</span></span></li>
+    <li data-key="Telefon standi"><span class="label">Telefon standı<span class="tech">açılı yüzeyler · Mirrored</span></span></li>
+    <li data-key="Zar"><span class="label">Zar (dice)<span class="tech">yüzeye sketch · Pocket · MultiTransform</span></span></li>
   </ul>
 
   <h2 class="level-3"><span class="lv">LV·3</span> İleri Katı Modelleme</h2>
-  <p class="level-desc">Yol boyunca süpürme, kesitler arası geçiş ve yapısal detaylar. <span class="skill">sweep · loft · helix · rib · thread</span></p>
+  <p class="level-desc">Yol boyunca süpürme, kesitler arası geçiş ve yapısal detaylar. <span class="skill">AdditivePipe · AdditiveLoft · AdditiveHelix · Hole · Datum Plane</span></p>
   <ul data-level="3" class="task-list">
-    <li data-key="Yay"><span class="label">Yay (spring)<span class="tech">helix + sweep</span></span></li>
-    <li data-key="Civata somun"><span class="label">Cıvata ve somun (vida dişli)<span class="tech">thread aracı / helix sweep</span></span></li>
-    <li data-key="Boru dirsegi"><span class="label">Boru dirseği (pipe elbow)<span class="tech">sweep — eğri yol boyunca</span></span></li>
-    <li data-key="Gecis adaptoru"><span class="label">Geçiş adaptörü (kareden yuvarlağa)<span class="tech">loft</span></span></li>
-    <li data-key="Flans"><span class="label">Flanş (cıvata deliği desenli)<span class="tech">revolve + circular pattern + counterbore</span></span></li>
-    <li data-key="Ribli braket"><span class="label">Destekli braket (ribli)<span class="tech">rib — kaburga özelliği</span></span></li>
-    <li data-key="Ergonomik tutamak"><span class="label">Ergonomik tutamak / kol<span class="tech">loft / sweep ile organik form</span></span></li>
+    <li data-key="Yay"><span class="label">Yay (spring)<span class="tech">AdditiveHelix</span></span></li>
+    <li data-key="Civata somun"><span class="label">Cıvata ve somun (vida dişli)<span class="tech">SubtractiveHelix (cıvata) · Hole + Model Thread (somun)</span></span></li>
+    <li data-key="Boru dirsegi"><span class="label">Boru dirseği (pipe elbow)<span class="tech">AdditivePipe — eğri yol boyunca</span></span></li>
+    <li data-key="Gecis adaptoru"><span class="label">Geçiş adaptörü (kareden yuvarlağa)<span class="tech">AdditiveLoft · Datum Plane</span></span></li>
+    <li data-key="Flans"><span class="label">Flanş (cıvata deliği desenli)<span class="tech">Revolution + Hole (counterbore) + PolarPattern</span></span></li>
+    <li data-key="Ribli braket"><span class="label">Destekli braket (kaburgalı)<span class="tech">simetrik Pad ile kaburga (ayrı Rib aracı yok)</span></span></li>
+    <li data-key="Ergonomik tutamak"><span class="label">Ergonomik tutamak / kol<span class="tech">AdditiveLoft / AdditivePipe ile organik form</span></span></li>
   </ul>
 
   <h2 class="level-4"><span class="lv">LV·4</span> Karmaşık Tek Parçalar</h2>
-  <p class="level-desc">Gerçek mühendislik parçaları + yüzey modellemeye giriş. <span class="skill">multi-feature · surfacing · feature tree yönetimi</span></p>
+  <p class="level-desc">Gerçek mühendislik parçaları + Surface workbench'e giriş. <span class="skill">çok feature'lı Body · Surface · model ağacı yönetimi</span></p>
   <ul data-level="4" class="task-list">
-    <li data-key="Ingiliz anahtari"><span class="label">İngiliz anahtarı (wrench)<span class="tech">çoklu sketch düzlemi · simetri · fillet zinciri</span></span></li>
-    <li data-key="Piston"><span class="label">Piston<span class="tech">silindirik geometri · segman kanalları</span></span></li>
-    <li data-key="Pervane"><span class="label">Pervane / fan kanadı<span class="tech">circular pattern · eğimli yüzeyler</span></span></li>
-    <li data-key="Mouse govdesi"><span class="label">Bilgisayar faresi gövdesi<span class="tech">surfacing'e giriş</span></span></li>
-    <li data-key="Kask"><span class="label">Kask / kulaklık kabuğu<span class="tech">loft + surface + shell</span></span></li>
-    <li data-key="Motor blogu"><span class="label">Basitleştirilmiş motor bloğu<span class="tech">çok feature'lı düzenli ağaç</span></span></li>
+    <li data-key="Ingiliz anahtari"><span class="label">İngiliz anahtarı (wrench)<span class="tech">Datum Plane · Mirrored · Fillet zinciri</span></span></li>
+    <li data-key="Piston"><span class="label">Piston<span class="tech">Revolution · Groove (segman kanalları) · Hole</span></span></li>
+    <li data-key="Pervane"><span class="label">Pervane / fan kanadı<span class="tech">PolarPattern · AdditiveLoft (bükümlü kanat)</span></span></li>
+    <li data-key="Mouse govdesi"><span class="label">Bilgisayar faresi gövdesi<span class="tech">Surface workbench'e giriş (Filling / Sections)</span></span></li>
+    <li data-key="Kask"><span class="label">Kask / kulaklık kabuğu<span class="tech">AdditiveLoft + Thickness</span></span></li>
+    <li data-key="Motor blogu"><span class="label">Basitleştirilmiş motor bloğu<span class="tech">çok feature'lı düzenli ağaç · Spreadsheet parametreleri</span></span></li>
   </ul>
 
   <h2 class="level-5"><span class="lv">LV·5</span> Montaj &amp; Teknik Resim</h2>
-  <p class="level-desc">Parçaları birleştir, hareketi simüle et, üretim için 2B resim çıkar. CAD'in asıl gücü burada. <span class="skill">assembly · mate · motion · drawing</span></p>
+  <p class="level-desc">Parçaları birleştir, hareketi simüle et, üretim için 2B resim çıkar. Simulation için FreeCAD 1.1+ gerekli. <span class="skill">Assembly · Joint · Simulation · TechDraw</span></p>
   <ul data-level="5" class="task-list">
-    <li data-key="Civata montaji"><span class="label">Cıvata–somun–rondela montajı<span class="tech">mate — temel ilişki tanımlama</span></span></li>
-    <li data-key="Mentese"><span class="label">Menteşe (hinge)<span class="tech">concentric + coincident · hareketli eklem</span></span></li>
-    <li data-key="Disli kutusu"><span class="label">Basit dişli kutusu / redüktör<span class="tech">gear mate</span></span></li>
-    <li data-key="4 cubuk mekanizma"><span class="label">4 çubuk / krank-biyel mekanizması<span class="tech">motion study — hareket simülasyonu</span></span></li>
-    <li data-key="Teknik resim"><span class="label">Bir parçanın teknik resmini çıkar<span class="tech">drawing · görünüş · kesit · ölçü · antet</span></span></li>
-    <li data-key="Mini urun"><span class="label">Tam mini ürün (mengene / katlanır stand)<span class="tech">tüm becerilerin birleşimi</span></span></li>
+    <li data-key="Civata montaji"><span class="label">Cıvata–somun–rondela montajı<span class="tech">Assembly · Fixed / Cylindrical joint</span></span></li>
+    <li data-key="Mentese"><span class="label">Menteşe (hinge)<span class="tech">Revolute joint · Grounded parça</span></span></li>
+    <li data-key="Disli kutusu"><span class="label">Basit dişli kutusu / redüktör<span class="tech">Gears joint</span></span></li>
+    <li data-key="4 cubuk mekanizma"><span class="label">4 çubuk / krank-biyel mekanizması<span class="tech">Revolute + Slider joint · Assembly Simulation</span></span></li>
+    <li data-key="Teknik resim"><span class="label">Bir parçanın teknik resmini çıkar<span class="tech">TechDraw · görünüş · kesit · ölçü · antet şablonu</span></span></li>
+    <li data-key="Mini urun"><span class="label">Tam mini ürün (mengene / katlanır stand)<span class="tech">tüm beceriler · Exploded View · BOM</span></span></li>
   </ul>
 
   <div class="notes-footer">
@@ -478,7 +478,7 @@
     { value: 0, label: 'Başlanmadı' },
     { value: 1, label: 'Modelliyorum' },
     { value: 2, label: 'Model tamamlandı' },
-    { value: 3, label: 'Render / teknik resim aldım' },
+    { value: 3, label: 'Görsel / TechDraw aldım' },
     { value: 4, label: 'Tamamlandı' }
   ];
   const DONE_STATUS = 4;
@@ -487,7 +487,7 @@
   const RATING_DIMS = [
     { key: 'difficulty', label: 'Zorluk',          desc: 'Ne kadar zorlayıcıydı?' },
     { key: 'learning',   label: 'Öğrenme Değeri',   desc: 'Yeni hangi teknikleri öğrendin?' },
-    { key: 'quality',    label: 'Model Kalitesi',   desc: 'Feature ağacı düzeni, temiz ve parametrik modelleme' },
+    { key: 'quality',    label: 'Model Kalitesi',   desc: 'Model ağacı düzeni, tam kısıtlı sketch, parametrik yapı' },
     { key: 'enjoyment',  label: 'Keyif / Tatmin',   desc: 'Yaparken ne kadar keyif aldın?' }
   ];
 
@@ -734,7 +734,7 @@
         `).join('')}
         <div class="eval-summary"></div>
         <h4>💭 Düşünceler</h4>
-        <textarea class="thoughts-editor" placeholder="Parçanın son haliyle ilgili genel düşüncelerin... Hangi feature'ı farklı kurardın? Feature ağacı temiz mi çıktı? Bir dahaki sefere neyi denersin?"></textarea>
+        <textarea class="thoughts-editor" placeholder="Parçanın son haliyle ilgili genel düşüncelerin... Hangi adımı farklı kurardın? Model ağacı temiz mi çıktı? Bir dahaki sefere neyi denersin?"></textarea>
       </div>
     `;
     RATING_DIMS.forEach(dim => {
@@ -775,7 +775,7 @@
         <button type="button" class="tab-btn active" data-tab="write">Yaz</button>
         <button type="button" class="tab-btn" data-tab="preview">Önizle</button>
       </div>
-      <textarea class="notes-editor" placeholder="Bu parça hakkında notlarını buraya yaz...&#10;&#10;Örn: Hangi feature'ları kullandım, nerede takıldım, hangi sketch'i fully define edemedim, sonraki sefere ne denerim..."></textarea>
+      <textarea class="notes-editor" placeholder="Bu parça hakkında notlarını buraya yaz...&#10;&#10;Örn: Hangi araçları kullandım, nerede takıldım, hangi sketch tam kısıtlı (yeşil) olmadı, sonraki sefere ne denerim..."></textarea>
       <div class="notes-preview" style="display:none"></div>
       <div class="notes-hint">Otomatik kaydedilir • Markdown: **kalın** *italik* \`kod\` ### başlık - liste [link](url)</div>
       <div class="images-area">
@@ -970,7 +970,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'solidworks_rutini_yedek_' + new Date().toISOString().split('T')[0] + '.json';
+    a.download = 'freecad_rutini_yedek_' + new Date().toISOString().split('T')[0] + '.json';
     a.click();
     URL.revokeObjectURL(url);
   }
