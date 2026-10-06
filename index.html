@@ -317,10 +317,95 @@
   .notes-footer ul li { background: transparent; border: none; cursor: default; padding: 0.25rem 0; display: list-item; list-style: square; margin-left: 1.5rem; }
   code.inline { background: var(--inset); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.9em; font-family: var(--mono); }
 
+  /* ── 3D model kartı ── */
+  .view3d-btn {
+    background: rgba(76,201,240,0.1); border: 1px solid rgba(76,201,240,0.45); color: var(--accent);
+    padding: 0.2rem 0.55rem; border-radius: 3px; font-size: 0.75rem; cursor: pointer;
+    font-family: var(--mono); white-space: nowrap; letter-spacing: 0.04em;
+  }
+  .view3d-btn:hover { background: rgba(76,201,240,0.2); }
+  .view3d-btn[hidden] { display: none; }
+  .model-area { margin-top: 1.5rem; }
+  .model-card {
+    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+    padding: 0.7rem 0.9rem; background: var(--surface);
+    border: 1px solid var(--border-2); border-radius: 4px;
+  }
+  .model-glyph { width: 38px; height: 38px; flex: none; color: var(--accent); }
+  .model-meta { flex: 1; min-width: 160px; font-family: var(--mono); font-size: 0.82rem; }
+  .model-meta strong { display: block; color: var(--ink); font-weight: 500; word-break: break-all; }
+  .model-meta span { color: var(--faint); font-size: 0.72rem; }
+  .model-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .model-btn {
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--border-2);
+    padding: 0.35rem 0.75rem; border-radius: 3px; cursor: pointer; font-size: 0.78rem; font-family: var(--mono);
+  }
+  .model-btn:hover { border-color: var(--accent); }
+  .model-btn.primary { background: var(--accent); color: #05223a; border-color: var(--accent); font-weight: 600; }
+  .model-btn.primary:hover { filter: brightness(1.1); }
+  .model-btn.danger:hover { border-color: var(--l5); color: var(--l5); }
+  .model-hint { font-family: var(--mono); font-size: 0.72rem; color: var(--faint); margin-top: 0.4rem; }
+  .model-status { font-family: var(--mono); font-size: 0.75rem; color: var(--gold); margin-top: 0.4rem; }
+  .model-status:empty { display: none; }
+
+  /* ── 3D görüntüleyici ── */
+  .viewer { display: none; position: fixed; inset: 0; z-index: 1100; background: var(--bg); flex-direction: column; }
+  .viewer.open { display: flex; }
+  .viewer-bar {
+    display: flex; align-items: center; gap: 1rem; padding: 0.6rem 1rem;
+    background: var(--surface); border-bottom: 1px solid var(--border-2);
+  }
+  .viewer-title { font-family: var(--mono); font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .viewer-title small { color: var(--faint); font-weight: 400; margin-left: 0.6rem; }
+  .viewer-dims { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); white-space: nowrap; }
+  .viewer-close {
+    background: transparent; border: 1px solid var(--border-2); color: var(--ink);
+    width: 34px; height: 34px; border-radius: 4px; font-size: 1.3rem; line-height: 1; cursor: pointer; flex: none;
+  }
+  .viewer-close:hover { border-color: var(--l5); color: var(--l5); }
+  .viewer-stage { position: relative; flex: 1; min-height: 0; background: var(--bg); }
+  .viewer-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; outline: none; }
+  .viewer-msg {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 1rem; text-align: center; font-family: var(--mono); font-size: 0.85rem; color: var(--muted); pointer-events: none;
+  }
+  .viewer-msg.error { color: var(--l5); }
+  .viewer-msg[hidden] { display: none; }
+  .viewer-tools {
+    display: flex; align-items: center; gap: 0.6rem 1rem; flex-wrap: wrap; padding: 0.6rem 1rem;
+    background: var(--surface); border-top: 1px solid var(--border-2);
+  }
+  .vt-group { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  .vt-btn {
+    background: var(--surface-2); color: var(--muted); border: 1px solid var(--border-2);
+    padding: 0.3rem 0.65rem; border-radius: 3px; font-family: var(--mono); font-size: 0.76rem; cursor: pointer;
+  }
+  .vt-btn:hover { color: var(--ink); border-color: var(--accent); }
+  .vt-btn.on { color: var(--accent); border-color: rgba(76,201,240,0.6); background: rgba(76,201,240,0.1); }
+  .vt-btn:disabled { opacity: 0.4; cursor: default; }
+  .viewer-hint { margin-left: auto; font-family: var(--mono); font-size: 0.7rem; color: var(--faint); }
+  .view3d-btn:focus-visible, .model-btn:focus-visible, .vt-btn:focus-visible, .viewer-close:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  @media (max-width: 640px) {
+    .viewer-hint { display: none; }
+    .viewer-bar { gap: 0.6rem; }
+    .viewer-dims { font-size: 0.68rem; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
   }
 </style>
+<!-- Three.js: yalnızca 3D görüntüleyici açıldığında indirilir -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -433,7 +518,8 @@
       <li><strong>⭐ Değerlendirme:</strong> parça "Tamamlandı" durumuna geçince yıldız puanlama açılır.</li>
       <li><strong>Notlar markdown destekler:</strong> <code class="inline">**kalın**</code>, <code class="inline">*italik*</code>, <code class="inline">`kod`</code>, <code class="inline">### başlık</code>, <code class="inline">- liste</code>.</li>
       <li><strong>Ekran görüntüleri</strong> 1200px'e küçültülüp buluta kaydedilir — her parçaya birkaç görsel rahat sığar.</li>
-      <li><strong>Yedek:</strong> "Yedek İndir" ile her şeyin JSON kopyasını alabilirsin.</li>
+      <li><strong>3D model:</strong> FreeCAD'den STL, GLB veya OBJ olarak dışa aktar, parçanın notlarındaki "3D Model" bölümünden yükle. <code class="inline">◆ 3D</code> ile fareyle döndürerek incele.</li>
+      <li><strong>Yedek:</strong> "Yedek İndir" ile her şeyin JSON kopyasını alabilirsin. 3D model dosyaları bu yedeğe dahil değil; orijinalleri FreeCAD'de sakla.</li>
     </ul>
   </div>
 </div>
@@ -442,6 +528,35 @@
   <button class="lightbox-close" onclick="closeLightbox()">×</button>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- 3D görüntüleyici -->
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" aria-hidden="true">
+  <div class="viewer-bar">
+    <span class="viewer-title" id="viewerTitle"></span>
+    <span class="viewer-dims" id="viewerDims"></span>
+    <button type="button" class="viewer-close" id="viewerClose" aria-label="Görüntüleyiciyi kapat">×</button>
+  </div>
+  <div class="viewer-stage" id="viewerStage">
+    <div class="viewer-msg" id="viewerMsg" hidden></div>
+  </div>
+  <div class="viewer-tools" id="viewerTools">
+    <div class="vt-group" aria-label="Standart görünümler">
+      <button type="button" class="vt-btn" data-view="iso" title="İzometrik (0)">İzo</button>
+      <button type="button" class="vt-btn" data-view="front" title="Ön (1)">Ön</button>
+      <button type="button" class="vt-btn" data-view="top" title="Üst (2)">Üst</button>
+      <button type="button" class="vt-btn" data-view="right" title="Sağ (3)">Sağ</button>
+    </div>
+    <div class="vt-group" aria-label="Görünüm ayarları">
+      <button type="button" class="vt-btn on" data-toggle="edges">Kenarlar</button>
+      <button type="button" class="vt-btn" data-toggle="wire">Tel kafes</button>
+      <button type="button" class="vt-btn" data-toggle="spin">Döndür</button>
+    </div>
+    <div class="vt-group">
+      <button type="button" class="vt-btn" data-act="snap">📸 Fotoğraflara ekle</button>
+    </div>
+    <span class="viewer-hint">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaştır · 0–3: görünümler</span>
+  </div>
 </div>
 
 <!-- Firebase SDK -->
@@ -519,7 +634,8 @@
       notes: d.notes || '',
       images: d.images || [],
       ratings: d.ratings || {},
-      thoughts: d.thoughts || ''
+      thoughts: d.thoughts || '',
+      model: d.model || null
     };
   }
 
@@ -582,10 +698,10 @@
     });
   }
 
-  async function addImage(key, file) {
+  async function addImage(key, file, defaultCaption = '') {
     try {
       const dataUrl = await resizeImage(file);
-      const caption = prompt('Bu görsel için kısa bir açıklama (boş bırakabilirsin):', '') || '';
+      const caption = prompt('Bu görsel için kısa bir açıklama (boş bırakabilirsin):', defaultCaption) || '';
       const data = getTaskData(key);
       data.images.push({ src: dataUrl, caption: caption, added: new Date().toISOString() });
       await setTaskData(key, data);
@@ -626,6 +742,184 @@
       });
       grid.appendChild(tile);
     });
+  }
+
+  // ─── 3D model depolama ──────────────────────────
+  // Firestore belgesi en fazla ~1 MB olabildiği için model gzip'lenir ve
+  // ~900 KB'lık parçalara bölünür: users/{uid}/cad_models/{parça}__{sürüm}__{i}
+  // Yeni sürüm tamamen yazılmadan eskisi silinmez; yarım kalan yükleme
+  // mevcut modeli bozmaz.
+  const MODEL_COLLECTION = "cad_models";
+  const MODEL_CHUNK = 900 * 1024;
+  const MODEL_MAX_BYTES = 25 * 1024 * 1024;
+  const MODEL_MAX_CHUNKS = 12;
+  const MODEL_EXTS = ['stl', 'glb', 'obj'];
+  const modelCache = new Map();
+  const CUBE_SVG = `<svg class="model-glyph" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 4 35 12.5v15L20 36 5 27.5v-15z"/><path d="M5 12.5 20 21l15-8.5M20 21v15"/>
+      <path d="M20 21V4M20 21 5 27.5M20 21l15 6.5" stroke-dasharray="2 2" opacity=".35"/></svg>`;
+
+  function modelsCol() {
+    return db.collection('users').doc(currentUser.uid).collection(MODEL_COLLECTION);
+  }
+  function chunkId(key, v, i) { return encodeURIComponent(key) + '__' + v + '__' + i; }
+  function fmtBytes(n) { return n < 1048576 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function liFor(key) { return document.querySelector(`li[data-key="${CSS.escape(key)}"]`); }
+  function taskTitle(key) {
+    const label = liFor(key)?.querySelector('.task-header .label');
+    return (label?.firstChild?.textContent || key).trim();
+  }
+
+  async function gzipBytes(u8) {
+    const s = new Blob([u8]).stream().pipeThrough(new CompressionStream('gzip'));
+    return new Uint8Array(await new Response(s).arrayBuffer());
+  }
+  async function gunzipBytes(u8) {
+    const s = new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Uint8Array(await new Response(s).arrayBuffer());
+  }
+
+  function setModelStatus(key, text) {
+    const el = liFor(key)?.querySelector('.model-status');
+    if (el) el.textContent = text || '';
+  }
+
+  async function deleteChunks(key, model) {
+    if (!model) return;
+    await Promise.all(Array.from({ length: model.chunks }, (_, i) =>
+      modelsCol().doc(chunkId(key, model.v, i)).delete()));
+  }
+
+  async function uploadModel(key, file) {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (!MODEL_EXTS.includes(ext)) {
+      alert('Desteklenen formatlar: STL, GLB, OBJ.');
+      return;
+    }
+    if (file.size > MODEL_MAX_BYTES) {
+      alert(`Dosya çok büyük (${fmtBytes(file.size)}); sınır ${fmtBytes(MODEL_MAX_BYTES)}. FreeCAD'de daha kaba bir mesh ile dışa aktarmayı dene.`);
+      return;
+    }
+    const raw = new Uint8Array(await file.arrayBuffer());
+    let payload = raw, gz = false;
+    if (typeof CompressionStream !== 'undefined') {
+      setModelStatus(key, 'Sıkıştırılıyor…');
+      const packed = await gzipBytes(raw);
+      if (packed.length < raw.length) { payload = packed; gz = true; }
+    }
+    const chunks = Math.max(1, Math.ceil(payload.length / MODEL_CHUNK));
+    if (chunks > MODEL_MAX_CHUNKS) {
+      setModelStatus(key, '');
+      alert(`Model sıkıştırıldıktan sonra da çok büyük (${fmtBytes(payload.length)}). FreeCAD'de daha kaba bir mesh ile dışa aktarmayı dene.`);
+      return;
+    }
+
+    const v = Date.now().toString(36);
+    const old = getTaskData(key).model;
+    setSyncStatus('saving');
+    try {
+      for (let i = 0; i < chunks; i++) {
+        setModelStatus(key, `Yükleniyor… ${i + 1}/${chunks}`);
+        const part = payload.subarray(i * MODEL_CHUNK, (i + 1) * MODEL_CHUNK);
+        await modelsCol().doc(chunkId(key, v, i)).set({ data: firebase.firestore.Blob.fromUint8Array(part), i });
+      }
+      const d = getTaskData(key);
+      d.model = {
+        name: file.name, ext, size: raw.length, stored: payload.length, gz, chunks, v,
+        date: new Date().toLocaleDateString('tr-TR')
+      };
+      await setTaskData(key, d);
+      if (old) deleteChunks(key, old).catch(e => console.warn('Eski model parçaları silinemedi', e));
+      setModelStatus(key, '');
+      renderModelArea(key);
+      updateModelButton(key);
+    } catch (e) {
+      console.error(e);
+      setSyncStatus('error');
+      setModelStatus(key, '');
+      deleteChunks(key, { v, chunks }).catch(() => {});
+      alert('Model yüklenemedi: ' + e.message);
+    }
+  }
+
+  async function loadModelBytes(key) {
+    const m = getTaskData(key).model;
+    if (!m) throw new Error('Bu parçaya model yüklenmemiş');
+    const cacheKey = key + '|' + m.v;
+    if (modelCache.has(cacheKey)) return modelCache.get(cacheKey);
+    const snaps = await Promise.all(Array.from({ length: m.chunks }, (_, i) =>
+      modelsCol().doc(chunkId(key, m.v, i)).get()));
+    const parts = snaps.map((s, i) => {
+      if (!s.exists) throw new Error(`Model parçası bulunamadı (${i + 1}/${m.chunks}). Modeli yeniden yükle.`);
+      return s.data().data.toUint8Array();
+    });
+    let bytes = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+    let off = 0;
+    for (const p of parts) { bytes.set(p, off); off += p.length; }
+    if (m.gz) bytes = await gunzipBytes(bytes);
+    const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+    modelCache.set(cacheKey, buffer);
+    return buffer;
+  }
+
+  async function deleteModel(key) {
+    const d = getTaskData(key);
+    if (!d.model) return;
+    if (!confirm(`"${d.model.name}" modeli silinsin mi?`)) return;
+    const old = d.model;
+    d.model = null;
+    await setTaskData(key, d);
+    modelCache.delete(key + '|' + old.v);
+    renderModelArea(key);
+    updateModelButton(key);
+    deleteChunks(key, old).catch(e => console.warn('Model parçaları silinemedi', e));
+  }
+
+  function openModel(key) {
+    const m = getTaskData(key).model;
+    if (!m) return;
+    if (!window.CadViewer) {
+      alert('3D görüntüleyici yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.');
+      return;
+    }
+    window.CadViewer.open({
+      title: taskTitle(key),
+      fileName: m.name,
+      ext: m.ext,
+      load: () => loadModelBytes(key),
+      onSnapshot: blob => addImage(key, blob, '3D görünüm')
+    });
+  }
+
+  function renderModelArea(key) {
+    const body = liFor(key)?.querySelector('.model-body');
+    if (!body) return;
+    const m = getTaskData(key).model;
+    if (!m) {
+      body.innerHTML = `
+        <button type="button" class="add-image-btn" data-model="upload">+ Model Yükle</button>
+        <div class="model-hint">FreeCAD: parçayı seç → Dosya → Dışa Aktar → STL. GLB ve OBJ de olur.</div>`;
+      return;
+    }
+    body.innerHTML = `
+      <div class="model-card">
+        ${CUBE_SVG}
+        <div class="model-meta">
+          <strong>${escapeHtml(m.name)}</strong>
+          <span>${m.ext.toUpperCase()} · ${fmtBytes(m.size)} · ${escapeHtml(m.date || '')}</span>
+        </div>
+        <div class="model-actions">
+          <button type="button" class="model-btn primary" data-model="view">◆ 3D Görüntüle</button>
+          <button type="button" class="model-btn" data-model="upload">Değiştir</button>
+          <button type="button" class="model-btn danger" data-model="delete">Sil</button>
+        </div>
+      </div>`;
+  }
+
+  function updateModelButton(key) {
+    const btn = liFor(key)?.querySelector('.view3d-btn');
+    if (btn) btn.hidden = !getTaskData(key).model;
   }
 
   // ─── Lightbox ───────────────────────────────────
@@ -778,6 +1072,12 @@
       <textarea class="notes-editor" placeholder="Bu parça hakkında notlarını buraya yaz...&#10;&#10;Örn: Hangi araçları kullandım, nerede takıldım, hangi sketch tam kısıtlı (yeşil) olmadı, sonraki sefere ne denerim..."></textarea>
       <div class="notes-preview" style="display:none"></div>
       <div class="notes-hint">Otomatik kaydedilir • Markdown: **kalın** *italik* \`kod\` ### başlık - liste [link](url)</div>
+      <div class="model-area">
+        <h4>🧊 3D Model</h4>
+        <div class="model-body"></div>
+        <div class="model-status"></div>
+        <input type="file" class="model-input" accept=".stl,.glb,.obj" style="display:none">
+      </div>
       <div class="images-area">
         <h4>📸 Ekran Görüntüleri</h4>
         <div class="image-controls">
@@ -822,8 +1122,8 @@
       }, 600);
     });
 
-    const fileInput = section.querySelector('input[type="file"]');
-    section.querySelector('.add-image-btn').addEventListener('click', (e) => {
+    const fileInput = section.querySelector('.images-area input[type="file"]');
+    section.querySelector('.images-area .add-image-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       fileInput.click();
     });
@@ -832,6 +1132,22 @@
       fileInput.value = '';
     });
 
+    const modelInput = section.querySelector('.model-input');
+    section.querySelector('.model-area').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-model]');
+      if (!btn) return;
+      e.stopPropagation();
+      if (btn.dataset.model === 'upload') modelInput.click();
+      else if (btn.dataset.model === 'view') openModel(key);
+      else if (btn.dataset.model === 'delete') deleteModel(key);
+    });
+    modelInput.addEventListener('change', async () => {
+      const file = modelInput.files[0];
+      modelInput.value = '';
+      if (file) await uploadModel(key, file);
+    });
+
+    renderModelArea(key);
     renderImages(key);
     renderStatusHistory(key);
     setEvalLockState(key);
@@ -871,6 +1187,7 @@
       <span class="rating-badge">${avg !== null ? '★ ' + avg.toFixed(1) : ''}</span>
       <select class="status-select" data-status="${data.status}">${optionsHTML}</select>
       <span class="date">${lastChange ? '⏱ ' + lastChange : ''}</span>
+      <button type="button" class="view3d-btn" title="3D modeli görüntüle" hidden>◆ 3D</button>
       <button type="button" class="expand-btn">📝 Notlar</button>
     `;
     li.appendChild(header);
@@ -878,6 +1195,12 @@
     const select = header.querySelector('.status-select');
     const dateEl = header.querySelector('.date');
     const expandBtn = header.querySelector('.expand-btn');
+    const view3dBtn = header.querySelector('.view3d-btn');
+    view3dBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModel(key);
+    });
+    view3dBtn.addEventListener('pointerenter', () => window.CadViewer?.preload());
 
     select.addEventListener('click', e => e.stopPropagation());
     select.addEventListener('change', async () => {
@@ -911,6 +1234,7 @@
 
     updateExpandButton(key);
     updateRatingBadge(key);
+    updateModelButton(key);
   }
 
   function updateProgress() {
@@ -948,10 +1272,14 @@
 
   // ─── Reset / Export / Import ────────────────────
   async function resetAll() {
-    if (!confirm('TÜM ilerleme, notlar, görseller ve değerlendirmeler buluttan silinecek. Emin misin?')) return;
+    if (!confirm('TÜM ilerleme, notlar, görseller, 3D modeller ve değerlendirmeler buluttan silinecek. Emin misin?')) return;
     if (!confirm('Gerçekten emin misin? Bu işlem geri alınamaz.')) return;
     setSyncStatus('saving');
     try {
+      await Promise.all(Object.entries(state)
+        .filter(([, t]) => t && t.model)
+        .map(([k, t]) => deleteChunks(k, t.model)));
+      modelCache.clear();
       const snap = await tasksCol().get();
       const batch = db.batch();
       snap.forEach(doc => batch.delete(doc.ref));
@@ -1004,7 +1332,8 @@
             notes: t.notes || '',
             images: t.images || [],
             ratings: t.ratings || {},
-            thoughts: t.thoughts || ''
+            thoughts: t.thoughts || '',
+            model: t.model || null
           };
           const docId = encodeURIComponent(key);
           batch.set(tasksCol().doc(docId), normalized);
@@ -1056,6 +1385,317 @@
       state = {};
     }
   });
+</script>
+
+<script type="module">
+  // ─── 3D görüntüleyici (Three.js) ─────────────────
+  // Kütüphane ilk açılışta indirilir; sayfa yüklenmesini yavaşlatmaz.
+  let L = null;
+  function lib() {
+    if (!L) {
+      L = Promise.all([
+        import('three'),
+        import('three/addons/controls/OrbitControls.js'),
+        import('three/addons/loaders/STLLoader.js'),
+        import('three/addons/loaders/GLTFLoader.js'),
+        import('three/addons/loaders/OBJLoader.js'),
+        import('three/addons/utils/BufferGeometryUtils.js')
+      ]).then(([THREE, oc, stl, gltf, obj, bgu]) => ({
+        THREE, OrbitControls: oc.OrbitControls, STLLoader: stl.STLLoader,
+        GLTFLoader: gltf.GLTFLoader, OBJLoader: obj.OBJLoader, toCreasedNormals: bgu.toCreasedNormals
+      })).catch(e => { L = null; throw new Error('3D kütüphanesi indirilemedi (' + e.message + ')'); });
+    }
+    return L;
+  }
+
+  const ui = {
+    root: document.getElementById('viewer'),
+    stage: document.getElementById('viewerStage'),
+    title: document.getElementById('viewerTitle'),
+    dims: document.getElementById('viewerDims'),
+    msg: document.getElementById('viewerMsg'),
+    tools: document.getElementById('viewerTools'),
+    close: document.getElementById('viewerClose')
+  };
+
+  // FreeCAD (Z yukarı) → Three.js (Y yukarı): (x, y, z) → (x, z, −y)
+  const VIEWS = { iso: [1, 1, 1], front: [0, 0, 1], top: [0, 1, 0.0001], right: [1, 0, 0] };
+  const KEY_VIEWS = { '0': 'iso', '1': 'front', '2': 'top', '3': 'right' };
+
+  let T = null;                      // yüklenmiş kütüphane
+  let renderer, scene, camera, controls, keyLight, lightOffset;
+  let holder = null, grid = null, radius = 1;
+  let edgesAvailable = true, edgesOn = true, wireOn = false;
+  let session = 0, snapshotCb = null, lastFocus = null;
+
+  function showMsg(text, isError) {
+    ui.msg.textContent = text || '';
+    ui.msg.classList.toggle('error', !!isError);
+    ui.msg.hidden = !text;
+  }
+
+  function ensureRenderer() {
+    if (renderer) return;
+    const { THREE, OrbitControls } = T;
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    ui.stage.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a1a2f);
+    camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
+    scene.add(new THREE.HemisphereLight(0xe6f2ff, 0x1d3a5c, 1.4));
+    keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+    scene.add(keyLight);
+    const rim = new THREE.DirectionalLight(0x9fdcff, 0.7);
+    rim.position.set(-1, -0.6, -1);
+    scene.add(rim);
+    lightOffset = new THREE.Vector3();
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.autoRotateSpeed = 1.5;
+    new ResizeObserver(resize).observe(ui.stage);
+  }
+
+  function resize() {
+    if (!renderer) return;
+    const w = ui.stage.clientWidth, h = ui.stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  function tick() {
+    controls.update();
+    // Işık kamerayla birlikte döner; model her açıdan aydınlık kalır
+    lightOffset.set(0, radius, 0);
+    keyLight.position.copy(camera.position).add(lightOffset);
+    renderer.render(scene, camera);
+  }
+
+  function disposeTree(obj) {
+    obj.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
+      mats.forEach(m => { for (const k in m) if (m[k] && m[k].isTexture) m[k].dispose(); m.dispose(); });
+    });
+  }
+
+  function clearScene() {
+    if (holder) { scene.remove(holder); disposeTree(holder); holder = null; }
+    if (grid) { scene.remove(grid); disposeTree(grid); grid = null; }
+  }
+
+  function cadMaterial() {
+    const { THREE } = T;
+    return new THREE.MeshStandardMaterial({
+      color: 0xc3d1df, metalness: 0.1, roughness: 0.55, side: THREE.DoubleSide,
+      polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1
+    });
+  }
+
+  async function buildObject(buffer, ext) {
+    const { THREE, STLLoader, GLTFLoader, OBJLoader, toCreasedNormals } = T;
+    if (ext === 'stl') {
+      // Eğri yüzeyler yumuşak, keskin kenarlar keskin görünsün
+      const g = toCreasedNormals(new STLLoader().parse(buffer), Math.PI / 6);
+      return { obj: new THREE.Mesh(g, cadMaterial()), zUp: true };
+    }
+    if (ext === 'obj') {
+      const obj = new OBJLoader().parse(new TextDecoder().decode(buffer));
+      obj.traverse(o => {
+        if (o.isMesh) { o.geometry = toCreasedNormals(o.geometry, Math.PI / 6); o.material = cadMaterial(); }
+      });
+      return { obj, zUp: true };
+    }
+    const gltf = await new GLTFLoader().parseAsync(buffer, '');
+    gltf.scene.traverse(o => {
+      if (!o.isMesh) return;
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+        m.side = THREE.DoubleSide;
+        m.polygonOffset = true; m.polygonOffsetFactor = 1; m.polygonOffsetUnits = 1;
+      });
+    });
+    return { obj: gltf.scene, zUp: false };   // glTF zaten Y yukarı
+  }
+
+  function niceStep(x) {
+    if (!(x > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(x)));
+    const n = x / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
+  }
+  function fmtLen(n) {
+    const d = n >= 100 ? 0 : n >= 10 ? 1 : 2;
+    return String(+n.toFixed(d)).replace('.', ',');
+  }
+
+  function place(obj, zUp, ext) {
+    const { THREE } = T;
+    const raw = new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());
+    // Ölçüler FreeCAD eksenlerinde (X × Y × Z)
+    let dims = zUp ? [raw.x, raw.y, raw.z] : [raw.x, raw.z, raw.y];
+    // glTF metre kullanır; parça boyutu 2'den küçükse metre kabul edip mm'ye çevir
+    const unit = (ext === 'glb' && Math.max(...dims) < 2) ? 1000 : 1;
+    dims = dims.map(d => d * unit);
+
+    if (zUp) obj.rotation.x = -Math.PI / 2;
+    holder = new THREE.Group();
+    holder.add(obj);
+    holder.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(holder);
+    obj.position.sub(box.getCenter(new THREE.Vector3()));
+    const size = box.getSize(new THREE.Vector3());
+    radius = Math.max(size.length() / 2, 1e-6);
+    scene.add(holder);
+
+    // Model altında, boyuta göre ölçeklenen ızgara
+    const span = Math.max(size.x, size.z, size.y * 0.5);
+    const step = niceStep(span / 6);
+    const half = Math.ceil((span * 1.6) / step) * step;
+    grid = new THREE.GridHelper(half * 2, Math.min(200, Math.round((half * 2) / step)), 0x4cc9f0, 0x284d76);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.45;
+    grid.position.y = -size.y / 2 - radius * 0.002;
+    scene.add(grid);
+
+    ui.dims.textContent = `${dims.map(fmtLen).join(' × ')} mm · ızgara ${fmtLen(step * unit)} mm`;
+  }
+
+  function addEdges() {
+    const { THREE } = T;
+    const meshes = [];
+    let tris = 0;
+    holder.traverse(o => {
+      if (!o.isMesh) return;
+      meshes.push(o);
+      const g = o.geometry;
+      tris += (g.index ? g.index.count : g.attributes.position.count) / 3;
+    });
+    edgesAvailable = tris <= 600000;     // çok yoğun mesh'te kenar çizimi yavaşlatır
+    if (!edgesAvailable) return;
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x10243d, transparent: true, opacity: 0.8 });
+    meshes.forEach(m => {
+      const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 25), lineMat);
+      e.userData.edge = true;
+      m.add(e);
+    });
+  }
+
+  function applyDisplay() {
+    holder.traverse(o => {
+      if (o.userData.edge) o.visible = edgesOn && edgesAvailable;
+      else if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.wireframe = wireOn; });
+    });
+    const eb = ui.tools.querySelector('[data-toggle="edges"]');
+    eb.disabled = !edgesAvailable;
+    eb.title = edgesAvailable ? '' : 'Mesh çok yoğun, kenar çizimi kapalı';
+    eb.classList.toggle('on', edgesOn && edgesAvailable);
+    ui.tools.querySelector('[data-toggle="wire"]').classList.toggle('on', wireOn);
+  }
+
+  function setView(name) {
+    const { THREE } = T;
+    const dir = new THREE.Vector3(...(VIEWS[name] || VIEWS.iso)).normalize();
+    const vHalf = THREE.MathUtils.degToRad(camera.fov / 2);
+    const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+    const dist = radius / Math.sin(Math.min(vHalf, hHalf)) * 1.08;
+    controls.target.set(0, 0, 0);
+    camera.position.copy(dir.multiplyScalar(dist));
+    camera.near = dist / 200;
+    camera.far = dist * 50;
+    camera.updateProjectionMatrix();
+    controls.minDistance = radius * 0.05;
+    controls.maxDistance = dist * 10;
+    controls.update();
+  }
+
+  async function open({ title, fileName, ext, load, onSnapshot }) {
+    const my = ++session;
+    snapshotCb = onSnapshot || null;
+    lastFocus = document.activeElement;
+    ui.title.innerHTML = '';
+    ui.title.append(document.createTextNode('◆ ' + title));
+    if (fileName) {
+      const s = document.createElement('small');
+      s.textContent = fileName;
+      ui.title.append(s);
+    }
+    ui.dims.textContent = '';
+    ui.root.classList.add('open');
+    ui.root.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    ui.close.focus();
+    showMsg('Model indiriliyor…');
+    edgesOn = true; wireOn = false;
+    if (controls) controls.autoRotate = false;
+    ui.tools.querySelector('[data-toggle="spin"]').classList.remove('on');
+
+    try {
+      const [buffer, lb] = await Promise.all([load(), lib()]);
+      if (my !== session) return;
+      T = lb;
+      showMsg('Model hazırlanıyor…');
+      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+      ensureRenderer();
+      clearScene();
+      const { obj, zUp } = await buildObject(buffer, ext);
+      if (my !== session) { disposeTree(obj); return; }
+      place(obj, zUp, ext);
+      addEdges();
+      applyDisplay();
+      resize();
+      setView('iso');
+      renderer.setAnimationLoop(tick);
+      showMsg('');
+      renderer.domElement.setAttribute('tabindex', '0');
+      renderer.domElement.setAttribute('aria-label', '3D model görünümü');
+    } catch (e) {
+      if (my !== session) return;
+      console.error(e);
+      showMsg('Model açılamadı: ' + (e.message || e), true);
+    }
+  }
+
+  function close() {
+    if (!ui.root.classList.contains('open')) return;
+    session++;
+    ui.root.classList.remove('open');
+    ui.root.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (renderer) { renderer.setAnimationLoop(null); clearScene(); }
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function snapshot() {
+    if (!snapshotCb || !renderer || !holder) return;
+    renderer.render(scene, camera);
+    renderer.domElement.toBlob(b => { if (b) snapshotCb(b); }, 'image/png');
+  }
+
+  ui.close.addEventListener('click', close);
+  ui.tools.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b || !holder) return;
+    if (b.dataset.view) setView(b.dataset.view);
+    else if (b.dataset.toggle === 'edges') { edgesOn = !edgesOn; applyDisplay(); }
+    else if (b.dataset.toggle === 'wire') { wireOn = !wireOn; applyDisplay(); }
+    else if (b.dataset.toggle === 'spin') {
+      controls.autoRotate = !controls.autoRotate;
+      b.classList.toggle('on', controls.autoRotate);
+    }
+    else if (b.dataset.act === 'snap') snapshot();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!ui.root.classList.contains('open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (KEY_VIEWS[e.key] && holder && !e.ctrlKey && !e.metaKey && !e.altKey) setView(KEY_VIEWS[e.key]);
+  });
+
+  window.CadViewer = { open, close, preload: () => { lib().catch(() => {}); } };
 </script>
 
 </body>
