@@ -393,11 +393,129 @@
     .viewer-dims { font-size: 0.68rem; }
   }
 
+  /* ── Sergi ── */
+  .sergi {
+    position: relative; margin-bottom: 1.25rem; background: var(--bg);
+    border: 1px solid var(--border-2); border-radius: 4px; overflow: hidden;
+  }
+  .sergi [hidden], .sergi[hidden] { display: none !important; }
+  .sergi-view { position: relative; }
+  .sergi-stage {
+    position: relative; height: clamp(260px, 46vh, 430px);
+    background: radial-gradient(120% 95% at 50% 40%, #16396a 0%, #0e2546 42%, var(--bg) 100%);
+  }
+  .sergi-stage canvas { display: block; width: 100%; height: 100%; outline: none; transition: opacity 0.33s ease; }
+  .sergi-stage canvas.fade { opacity: 0; }
+  .sergi-frame { position: absolute; inset: 6px; border: 1px solid rgba(76,201,240,0.1); border-radius: 2px; pointer-events: none; }
+  .sergi-msg {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 1rem; text-align: center; font-family: var(--mono); font-size: 0.82rem; color: var(--muted); pointer-events: none;
+  }
+  .sergi-top {
+    position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 0.35rem;
+    padding: 0.6rem 0.7rem 1.2rem; background: linear-gradient(rgba(10,26,47,0.8), transparent);
+    transition: opacity 0.3s ease;
+  }
+  .sergi-eyebrow {
+    flex: 1; min-width: 0; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sergi-eyebrow b { color: var(--ink); font-weight: 500; letter-spacing: 0.14em; margin-left: 0.35rem; }
+  .sergi-eyebrow em { font-style: normal; color: var(--gold); letter-spacing: 0.08em; text-transform: none; margin-left: 0.5rem; }
+  .sergi-nav { display: flex; gap: 0.25rem; margin-right: 0.35rem; }
+  .sg-btn {
+    width: 32px; height: 32px; flex: none; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(12,31,57,0.72); border: 1px solid var(--border-2); border-radius: 4px;
+    color: var(--ink); cursor: pointer; padding: 0;
+  }
+  .sg-btn svg { width: 15px; height: 15px; }
+  .sg-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sg-btn.on { border-color: rgba(76,201,240,0.6); color: var(--accent); background: rgba(76,201,240,0.12); }
+  .sg-btn:focus-visible, .plate-title:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sergi.single [data-sg="prev"], .sergi.single [data-sg="next"], .sergi.single [data-sg="play"],
+  .sergi.single .sergi-progress { display: none; }
+  .sergi-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(76,201,240,0.1); }
+  .sergi-progress span { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+  /* Teknik resim anteti biçiminde bilgi kartı */
+  .sergi-plate {
+    position: absolute; right: 16px; bottom: 18px; width: 300px; max-width: calc(100% - 32px);
+    background: rgba(10,28,51,0.9); border: 1px solid var(--border-2); font-family: var(--mono);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+  }
+  .plate-title {
+    display: block; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border-2);
+    padding: 0.5rem 0.75rem 0.45rem; color: var(--ink); font: 600 0.92rem/1.3 var(--mono); cursor: pointer;
+  }
+  .plate-title:hover { color: var(--accent); }
+  .plate-title small {
+    display: block; margin-top: 2px; font-weight: 400; font-size: 0.68rem; color: var(--faint);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .plate-grid { display: grid; grid-template-columns: auto auto 1fr; }
+  .plate-cell { padding: 0.32rem 0.75rem 0.4rem; border-right: 1px solid var(--border); font-size: 0.74rem; color: var(--ink); min-width: 0; }
+  .plate-cell:last-child { border-right: 0; }
+  .plate-cell i { display: block; font-style: normal; font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 1px; }
+  .plate-cell b { color: var(--gold); font-weight: 500; white-space: nowrap; }
+  .plate-dot { display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 0.35rem; vertical-align: 1px; }
+
+  .sergi-settings {
+    display: none; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.4rem;
+    padding: 0.75rem 0.9rem; background: var(--surface); border-top: 1px solid var(--border-2);
+  }
+  .sergi.settings-open .sergi-settings { display: flex; }
+  .sg-field { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
+  .sg-field > span {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--faint); margin-right: 0.3rem;
+  }
+
+  .sergi-bar { display: none; align-items: center; gap: 0.75rem; padding: 0.55rem 0.8rem; background: var(--surface); }
+  .sergi-empty { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; padding: 0.9rem 1rem; background: var(--surface); }
+  .sergi-empty .model-glyph { opacity: 0.8; }
+  .sergi-empty p { flex: 1; min-width: 200px; margin: 0; font-size: 0.88rem; color: var(--muted); }
+  .sergi-empty p::before {
+    content: 'SERGİ'; display: block; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.3em; color: var(--accent); margin-bottom: 0.15rem;
+  }
+  .sergi.collapsed .sergi-bar { display: flex; }
+  .sergi.collapsed .sergi-view, .sergi.collapsed .sergi-settings, .sergi.collapsed .sergi-empty,
+  .sergi.is-empty .sergi-view, .sergi.is-empty .sergi-settings { display: none; }
+
+  /* Tam ekran sergi */
+  .sergi.is-fs { display: flex; flex-direction: column; margin: 0; border: 0; border-radius: 0; background: var(--bg); }
+  .sergi.pseudo-fs { position: fixed; inset: 0; z-index: 1050; }
+  .sergi.is-fs .sergi-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .sergi.is-fs .sergi-stage { flex: 1; height: auto; min-height: 0; }
+  .sergi.is-fs .sergi-frame { inset: 14px; }
+  .sergi.is-fs .sergi-top { padding: 1rem 1.2rem 2rem; }
+  .sergi.is-fs .sergi-plate { right: 32px; bottom: 34px; width: 360px; }
+  .sergi.is-fs .plate-title { font-size: 1.1rem; }
+  .sergi.is-fs.idle { cursor: none; }
+  .sergi.is-fs.idle .sergi-top { opacity: 0; pointer-events: none; }
+
+  li.task.flash { box-shadow: 0 0 0 2px var(--accent); }
+
+  @media (max-width: 640px) {
+    .sergi-stage { height: 300px; }
+    .sergi-top { gap: 0.25rem; padding: 0.5rem 0.5rem 1rem; }
+    .sergi-nav { gap: 0.2rem; margin-right: 0.2rem; }
+    .sg-btn { width: 30px; height: 30px; }
+    .sergi-eyebrow { letter-spacing: 0.18em; }
+    /* Dar ekranda bilgi kartı modelin önünü kapatmasın: sahnenin altına iner */
+    .sergi-plate, .sergi.is-fs .sergi-plate {
+      position: static; width: auto; max-width: none; border-width: 1px 0 0; box-shadow: none;
+    }
+    .sergi.is-fs .plate-title { font-size: 0.95rem; }
+    .sergi-settings { gap: 0.7rem; }
+    .sg-field > span { flex-basis: 100%; margin: 0 0 0.1rem; }
+    .sergi-settings .vt-btn { padding: 0.3rem 0.55rem; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
   }
 </style>
-<!-- Three.js: yalnızca 3D görüntüleyici açıldığında indirilir -->
+<!-- Three.js: yalnızca görüntüleyici veya sergi gösterecek model olduğunda indirilir -->
 <script type="importmap">
 {
   "imports": {
@@ -435,6 +553,92 @@
 
 <!-- App content -->
 <div id="appContent">
+
+  <!-- Sergi: yüklenen 3D modeller sırayla oynar -->
+  <section class="sergi" id="sergi" aria-label="3D model sergisi" hidden>
+    <div class="sergi-bar">
+      <span class="sergi-eyebrow">◆ Sergi <b id="sergiBarCount"></b></span>
+      <button type="button" class="vt-btn" data-sg="expand">Sergiyi göster</button>
+    </div>
+    <div class="sergi-view">
+      <div class="sergi-stage" id="sergiStage">
+        <div class="sergi-frame" aria-hidden="true"></div>
+        <div class="sergi-msg" id="sergiMsg" hidden></div>
+        <div class="sergi-top">
+          <span class="sergi-eyebrow">Sergi<b id="sergiCount"></b><em id="sergiState"></em></span>
+          <div class="sergi-nav">
+            <button type="button" class="sg-btn" data-sg="prev" aria-label="Önceki model" title="Önceki (←)">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.8h2v10.4H3zm10 0v10.4L5.5 8z" fill="currentColor"/></svg>
+            </button>
+            <button type="button" class="sg-btn" data-sg="play" aria-label="Duraklat" title="Duraklat"></button>
+            <button type="button" class="sg-btn" data-sg="next" aria-label="Sonraki model" title="Sonraki (→)">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2.8h2v10.4h-2zM3 2.8v10.4L10.5 8z" fill="currentColor"/></svg>
+            </button>
+          </div>
+          <button type="button" class="sg-btn" data-sg="settings" aria-label="Sergi ayarları" aria-expanded="false" aria-controls="sergiSettings" title="Ayarlar">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4h7m3 0h2M2 8h2m3 0h7M2 12h8m3 0h1"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="11.5" cy="12" r="1.5"/></svg>
+          </button>
+          <button type="button" class="sg-btn" data-sg="fs" aria-label="Tam ekran" title="Tam ekran">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6V2h4m4 0h4v4m0 4v4h-4m-4 0H2v-4"/></svg>
+          </button>
+          <button type="button" class="sg-btn" data-sg="collapse" aria-label="Sergiyi gizle" title="Gizle">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 10 8 5.5 12.5 10"/></svg>
+          </button>
+        </div>
+        <div class="sergi-progress" aria-hidden="true"><span id="sergiProgress"></span></div>
+      </div>
+      <div class="sergi-plate" id="sergiPlate" hidden>
+        <button type="button" class="plate-title" data-sg="goto" title="Listede bu parçaya git">
+          <span id="plateTitle"></span><small id="plateFile"></small>
+        </button>
+        <div class="plate-grid">
+          <div class="plate-cell"><i>Seviye</i><span id="plateLevel"></span></div>
+          <div class="plate-cell"><i>Ölçü · mm</i><span id="plateDims"></span></div>
+          <div class="plate-cell"><i>Durum</i><span id="plateStatus"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sergi-empty" id="sergiEmpty" hidden>
+      <svg class="model-glyph" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 4 35 12.5v15L20 36 5 27.5v-15z"/><path d="M5 12.5 20 21l15-8.5M20 21v15"/>
+        <path d="M20 21V4M20 21 5 27.5M20 21l15 6.5" stroke-dasharray="2 2" opacity=".35"/></svg>
+      <p id="sergiEmptyText"></p>
+      <button type="button" class="vt-btn" data-sg="filter-off" id="sergiFilterOff" hidden>Filtreyi kapat</button>
+    </div>
+    <div class="sergi-settings" id="sergiSettings">
+      <div class="sg-field" role="group" aria-label="Model başına süre">
+        <span>Süre</span>
+        <button type="button" class="vt-btn" data-set="dur" data-val="5">5 sn</button>
+        <button type="button" class="vt-btn" data-set="dur" data-val="10">10 sn</button>
+        <button type="button" class="vt-btn" data-set="dur" data-val="20">20 sn</button>
+        <button type="button" class="vt-btn" data-set="dur" data-val="30">30 sn</button>
+        <button type="button" class="vt-btn" data-set="dur" data-val="60">1 dk</button>
+      </div>
+      <div class="sg-field" role="group" aria-label="Sıra">
+        <span>Sıra</span>
+        <button type="button" class="vt-btn" data-set="order" data-val="seq">Sıralı</button>
+        <button type="button" class="vt-btn" data-set="order" data-val="rand">Rastgele</button>
+      </div>
+      <div class="sg-field" role="group" aria-label="Görünüm">
+        <span>Görünüm</span>
+        <button type="button" class="vt-btn" data-set="spin">Döndür</button>
+        <button type="button" class="vt-btn" data-set="edges">Kenarlar</button>
+        <button type="button" class="vt-btn" data-set="wire">Tel kafes</button>
+        <button type="button" class="vt-btn" data-set="grid">Izgara</button>
+        <button type="button" class="vt-btn" data-set="info">Bilgi kartı</button>
+      </div>
+      <div class="sg-field" role="group" aria-label="Dönüş hızı">
+        <span>Hız</span>
+        <button type="button" class="vt-btn" data-set="speed" data-val="slow">Yavaş</button>
+        <button type="button" class="vt-btn" data-set="speed" data-val="normal">Normal</button>
+        <button type="button" class="vt-btn" data-set="speed" data-val="fast">Hızlı</button>
+      </div>
+      <div class="sg-field" role="group" aria-label="Filtre">
+        <span>Filtre</span>
+        <button type="button" class="vt-btn" data-set="onlyDone">Sadece tamamlananlar</button>
+      </div>
+    </div>
+  </section>
 
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   <div class="progress-text" id="progressText">0 / 0 tamamlandı</div>
@@ -519,6 +723,7 @@
       <li><strong>Notlar markdown destekler:</strong> <code class="inline">**kalın**</code>, <code class="inline">*italik*</code>, <code class="inline">`kod`</code>, <code class="inline">### başlık</code>, <code class="inline">- liste</code>.</li>
       <li><strong>Ekran görüntüleri</strong> 1200px'e küçültülüp buluta kaydedilir — her parçaya birkaç görsel rahat sığar.</li>
       <li><strong>3D model:</strong> FreeCAD'den STL, GLB veya OBJ olarak dışa aktar, parçanın notlarındaki "3D Model" bölümünden yükle. <code class="inline">◆ 3D</code> ile fareyle döndürerek incele.</li>
+      <li><strong>Sergi:</strong> en üstteki panel yüklenen tüm modelleri sırayla oynatır. Ayar düğmesinden süre, sıra ve görünümü seç; tam ekranda ← → ile geç, boşlukla duraklat. Bilgi kartındaki parça adına tıklayınca listede o parçaya gidersin. Sergi ayarları bu tarayıcıda saklanır.</li>
       <li><strong>Yedek:</strong> "Yedek İndir" ile her şeyin JSON kopyasını alabilirsin. 3D model dosyaları bu yedeğe dahil değil; orijinalleri FreeCAD'de sakla.</li>
     </ul>
   </div>
@@ -843,10 +1048,14 @@
         date: new Date().toLocaleDateString('tr-TR')
       };
       await setTaskData(key, d);
-      if (old) deleteChunks(key, old).catch(e => console.warn('Eski model parçaları silinemedi', e));
+      if (old) {
+        cacheDelete(key + '|' + old.v);
+        deleteChunks(key, old).catch(e => console.warn('Eski model parçaları silinemedi', e));
+      }
       setModelStatus(key, '');
       renderModelArea(key);
       updateModelButton(key);
+      notifySergi();
     } catch (e) {
       console.error(e);
       setSyncStatus('error');
@@ -856,25 +1065,73 @@
     }
   }
 
+  // Önbellek: sergi tüm modelleri dolaştığı için toplam boyut sınırlı (en eski çıkar)
+  const MODEL_CACHE_MAX = 160 * 1024 * 1024;
+  let modelCacheBytes = 0;
+  const modelInflight = new Map();
+  function cacheGet(k) {
+    const b = modelCache.get(k);
+    if (b) { modelCache.delete(k); modelCache.set(k, b); }
+    return b;
+  }
+  function cachePut(k, b) {
+    modelCache.set(k, b);
+    modelCacheBytes += b.byteLength;
+    for (const [ok, ob] of modelCache) {
+      if (modelCacheBytes <= MODEL_CACHE_MAX || ok === k) break;
+      modelCache.delete(ok);
+      modelCacheBytes -= ob.byteLength;
+    }
+  }
+  function cacheDelete(k) {
+    const b = modelCache.get(k);
+    if (b) { modelCache.delete(k); modelCacheBytes -= b.byteLength; }
+  }
+  function cacheClear() { modelCache.clear(); modelCacheBytes = 0; }
+
   async function loadModelBytes(key) {
     const m = getTaskData(key).model;
     if (!m) throw new Error('Bu parçaya model yüklenmemiş');
     const cacheKey = key + '|' + m.v;
-    if (modelCache.has(cacheKey)) return modelCache.get(cacheKey);
-    const snaps = await Promise.all(Array.from({ length: m.chunks }, (_, i) =>
-      modelsCol().doc(chunkId(key, m.v, i)).get()));
-    const parts = snaps.map((s, i) => {
-      if (!s.exists) throw new Error(`Model parçası bulunamadı (${i + 1}/${m.chunks}). Modeli yeniden yükle.`);
-      return s.data().data.toUint8Array();
-    });
-    let bytes = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
-    let off = 0;
-    for (const p of parts) { bytes.set(p, off); off += p.length; }
-    if (m.gz) bytes = await gunzipBytes(bytes);
-    const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
-    modelCache.set(cacheKey, buffer);
-    return buffer;
+    const hit = cacheGet(cacheKey);
+    if (hit) return hit;
+    // Aynı model aynı anda iki kez istenirse (sergi + görüntüleyici) tek indirme yapılır
+    if (modelInflight.has(cacheKey)) return modelInflight.get(cacheKey);
+    const job = (async () => {
+      const snaps = await Promise.all(Array.from({ length: m.chunks }, (_, i) =>
+        modelsCol().doc(chunkId(key, m.v, i)).get()));
+      const parts = snaps.map((s, i) => {
+        if (!s.exists) throw new Error(`Model parçası bulunamadı (${i + 1}/${m.chunks}). Modeli yeniden yükle.`);
+        return s.data().data.toUint8Array();
+      });
+      let bytes = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+      let off = 0;
+      for (const p of parts) { bytes.set(p, off); off += p.length; }
+      if (m.gz) bytes = await gunzipBytes(bytes);
+      const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+      cachePut(cacheKey, buffer);
+      return buffer;
+    })();
+    modelInflight.set(cacheKey, job);
+    try { return await job; }
+    finally { modelInflight.delete(cacheKey); }
   }
+
+  // Sergi için: modeli olan parçalar, listedeki sırayla
+  function exhibitItems() {
+    return [...document.querySelectorAll('li[data-key]')].map(li => {
+      const key = li.dataset.key;
+      const d = getTaskData(key);
+      if (!d.model) return null;
+      const lv = li.closest('ul')?.dataset.level;
+      return {
+        key, model: d.model, title: taskTitle(key), level: lv ? 'LV·' + lv : '',
+        status: d.status, statusLabel: STATUSES.find(s => s.value === d.status)?.label || '',
+        done: d.status === DONE_STATUS, rating: computeAvg(d.ratings)
+      };
+    }).filter(Boolean);
+  }
+  function notifySergi() { if (window.CadSergi) window.CadSergi.refresh(); }
 
   async function deleteModel(key) {
     const d = getTaskData(key);
@@ -883,7 +1140,8 @@
     const old = d.model;
     d.model = null;
     await setTaskData(key, d);
-    modelCache.delete(key + '|' + old.v);
+    cacheDelete(key + '|' + old.v);
+    notifySergi();
     renderModelArea(key);
     updateModelButton(key);
     deleteChunks(key, old).catch(e => console.warn('Model parçaları silinemedi', e));
@@ -1012,6 +1270,7 @@
     if (row) renderStars(row, data.ratings[dimKey] || 0);
     updateEvalSummary(key);
     updateRatingBadge(key);
+    notifySergi();
   }
   function setEvalLockState(key) {
     const data = getTaskData(key);
@@ -1230,6 +1489,7 @@
       renderStatusHistory(key);
       setEvalLockState(key);
       updateProgress();
+      notifySergi();
       if (newStatus === DONE_STATUS) li.querySelector('.blog-section').classList.add('open');
     });
 
@@ -1271,6 +1531,8 @@
       buildTask(li);
     });
     updateProgress();
+    window.cadReady = true;
+    notifySergi();
   }
 
   // ─── Load all data ──────────────────────────────
@@ -1292,7 +1554,7 @@
       await Promise.all(Object.entries(state)
         .filter(([, t]) => t && t.model)
         .map(([k, t]) => deleteChunks(k, t.model)));
-      modelCache.clear();
+      cacheClear();
       const snap = await tasksCol().get();
       const batch = db.batch();
       snap.forEach(doc => batch.delete(doc.ref));
@@ -1396,13 +1658,16 @@
       document.getElementById('appContent').classList.remove('visible');
       document.getElementById('authBar').style.display = 'none';
       state = {};
+      window.cadReady = false;
+      cacheClear();
+      notifySergi();
     }
   });
 </script>
 
 <script type="module">
-  // ─── 3D görüntüleyici (Three.js) ─────────────────
-  // Kütüphane ilk açılışta indirilir; sayfa yüklenmesini yavaşlatmaz.
+  // ─── 3D: ortak sahne + görüntüleyici + sergi (Three.js) ─────────
+  // Kütüphane yalnızca gerektiğinde indirilir; sayfa açılışını yavaşlatmaz.
   let L = null;
   function lib() {
     if (!L) {
@@ -1420,75 +1685,25 @@
     }
     return L;
   }
+  let T = null;                      // yüklenmiş kütüphane
+  async function three() { T = await lib(); return T; }
 
-  const ui = {
-    root: document.getElementById('viewer'),
-    stage: document.getElementById('viewerStage'),
-    title: document.getElementById('viewerTitle'),
-    dims: document.getElementById('viewerDims'),
-    msg: document.getElementById('viewerMsg'),
-    tools: document.getElementById('viewerTools'),
-    close: document.getElementById('viewerClose')
-  };
-
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // FreeCAD (Z yukarı) → Three.js (Y yukarı): (x, y, z) → (x, z, −y)
   const VIEWS = { iso: [1, 1, 1], front: [0, 0, 1], top: [0, 1, 0.0001], right: [1, 0, 0] };
-  const KEY_VIEWS = { '0': 'iso', '1': 'front', '2': 'top', '3': 'right' };
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const nextFrame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
 
-  let T = null;                      // yüklenmiş kütüphane
-  let renderer, scene, camera, controls, keyLight, lightOffset;
-  let holder = null, grid = null, radius = 1;
-  let edgesAvailable = true, edgesOn = true, wireOn = false;
-  let session = 0, snapshotCb = null, lastFocus = null;
-
-  function showMsg(text, isError) {
-    ui.msg.textContent = text || '';
-    ui.msg.classList.toggle('error', !!isError);
-    ui.msg.hidden = !text;
+  function niceStep(x) {
+    if (!(x > 0)) return 1;
+    const p = Math.pow(10, Math.floor(Math.log10(x)));
+    const n = x / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
   }
-
-  function ensureRenderer() {
-    if (renderer) return;
-    const { THREE, OrbitControls } = T;
-    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    ui.stage.appendChild(renderer.domElement);
-
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a1a2f);
-    camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
-    scene.add(new THREE.HemisphereLight(0xe6f2ff, 0x1d3a5c, 1.4));
-    keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
-    scene.add(keyLight);
-    const rim = new THREE.DirectionalLight(0x9fdcff, 0.7);
-    rim.position.set(-1, -0.6, -1);
-    scene.add(rim);
-    lightOffset = new THREE.Vector3();
-
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.autoRotateSpeed = 1.5;
-    new ResizeObserver(resize).observe(ui.stage);
+  function fmtLen(n) {
+    const d = n >= 100 ? 0 : n >= 10 ? 1 : 2;
+    return String(+n.toFixed(d)).replace('.', ',');
   }
-
-  function resize() {
-    if (!renderer) return;
-    const w = ui.stage.clientWidth, h = ui.stage.clientHeight;
-    if (!w || !h) return;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-
-  function tick() {
-    controls.update();
-    // Işık kamerayla birlikte döner; model her açıdan aydınlık kalır
-    lightOffset.set(0, radius, 0);
-    keyLight.position.copy(camera.position).add(lightOffset);
-    renderer.render(scene, camera);
-  }
-
   function disposeTree(obj) {
     obj.traverse(o => {
       if (o.geometry) o.geometry.dispose();
@@ -1496,12 +1711,6 @@
       mats.forEach(m => { for (const k in m) if (m[k] && m[k].isTexture) m[k].dispose(); m.dispose(); });
     });
   }
-
-  function clearScene() {
-    if (holder) { scene.remove(holder); disposeTree(holder); holder = null; }
-    if (grid) { scene.remove(grid); disposeTree(grid); grid = null; }
-  }
-
   function cadMaterial() {
     const { THREE } = T;
     return new THREE.MeshStandardMaterial({
@@ -1509,7 +1718,6 @@
       polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1
     });
   }
-
   async function buildObject(buffer, ext) {
     const { THREE, STLLoader, GLTFLoader, OBJLoader, toCreasedNormals } = T;
     if (ext === 'stl') {
@@ -1535,95 +1743,226 @@
     return { obj: gltf.scene, zUp: false };   // glTF zaten Y yukarı
   }
 
-  function niceStep(x) {
-    if (!(x > 0)) return 1;
-    const p = Math.pow(10, Math.floor(Math.log10(x)));
-    const n = x / p;
-    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
+  // ─── Ortak sahne: bir kap içinde model gösterir ──
+  class Stage {
+    constructor(container, { alpha = false, preserve = false, maxPixelRatio = 2, fit = 1.08 } = {}) {
+      const { THREE, OrbitControls } = T;
+      this.container = container;
+      this.fit = fit;             // model çevresindeki boşluk (1 = tam sığdır)
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha, preserveDrawingBuffer: preserve });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
+      this.canvas = this.renderer.domElement;
+      container.prepend(this.canvas);
+
+      this.scene = new THREE.Scene();
+      if (!alpha) this.scene.background = new THREE.Color(0x0a1a2f);
+      this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
+      this.scene.add(new THREE.HemisphereLight(0xe6f2ff, 0x1d3a5c, 1.4));
+      this.keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+      this.scene.add(this.keyLight);
+      const rim = new THREE.DirectionalLight(0x9fdcff, 0.7);
+      rim.position.set(-1, -0.6, -1);
+      this.scene.add(rim);
+
+      this.controls = new OrbitControls(this.camera, this.canvas);
+      this.controls.enableDamping = true;
+      this.controls.dampingFactor = 0.08;
+      this.controls.autoRotateSpeed = 1.5;
+      this.controls.addEventListener('start', () => { this.intro = null; });
+
+      this.opts = { edges: true, wire: false, grid: true };
+      this.holder = null; this.grid = null; this.radius = 1;
+      this.edgesAvailable = true;
+      this.intro = null; this.onFrame = null;
+      this.running = false; this.last = 0;
+      this._v = new THREE.Vector3();
+      new ResizeObserver(() => this.resize()).observe(container);
+    }
+
+    resize() {
+      const w = this.container.clientWidth, h = this.container.clientHeight;
+      if (!w || !h) return;
+      this.renderer.setSize(w, h, false);
+      this.camera.aspect = w / h;
+      this.camera.updateProjectionMatrix();
+    }
+
+    start() {
+      if (this.running) return;
+      this.running = true;
+      this.last = performance.now();
+      this.renderer.setAnimationLoop(t => this.tick(t));
+    }
+    stop() {
+      if (!this.running) return;
+      this.running = false;
+      this.renderer.setAnimationLoop(null);
+    }
+
+    tick(now) {
+      const raw = Math.max(0, (now - this.last) / 1000);
+      const dt = Math.min(0.1, raw);      // animasyon: yavaş karede sıçrama olmasın
+      this.last = now;
+      if (this.intro) {           // açılışta yumuşak yaklaşma
+        const it = this.intro;
+        it.t += dt;
+        const k = Math.min(1, it.t / it.dur), e = 1 - Math.pow(1 - k, 3);
+        this._v.copy(this.camera.position).sub(this.controls.target).setLength(it.from + (it.to - it.from) * e);
+        this.camera.position.copy(this.controls.target).add(this._v);
+        if (k >= 1) this.intro = null;
+      }
+      this.controls.update(dt);   // dt ile: dönüş hızı ekran tazelemesinden bağımsız
+      // Işık kamerayla birlikte döner; model her açıdan aydınlık kalır
+      this.keyLight.position.copy(this.camera.position);
+      this.keyLight.position.y += this.radius;
+      this.renderer.render(this.scene, this.camera);
+      // zamanlayıcı gerçek saati izler (yoğun modelde kare hızı düşse de süre doğru kalır)
+      if (this.onFrame) this.onFrame(Math.min(1, raw));
+    }
+
+    clear() {
+      this.intro = null;
+      if (this.holder) { this.scene.remove(this.holder); disposeTree(this.holder); this.holder = null; }
+      if (this.grid) { this.scene.remove(this.grid); disposeTree(this.grid); this.grid = null; }
+    }
+
+    async show(buffer, ext) {
+      const { obj, zUp } = await buildObject(buffer, ext);
+      let n = 0;
+      obj.traverse(o => { if (o.isMesh) n += o.geometry.attributes.position?.count || 0; });
+      if (!n) {
+        disposeTree(obj);
+        throw new Error("dosyada hiç üçgen yok (boş model). FreeCAD'de Body'yi seçip yeniden dışa aktar, sonra Değiştir ile yükle.");
+      }
+      this.clear();
+      const info = this._place(obj, zUp, ext);
+      this._addEdges();
+      this.apply();
+      this.resize();
+      return info;
+    }
+
+    _place(obj, zUp, ext) {
+      const { THREE } = T;
+      const raw = new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());
+      // Ölçüler FreeCAD eksenlerinde (X × Y × Z)
+      let dims = zUp ? [raw.x, raw.y, raw.z] : [raw.x, raw.z, raw.y];
+      // glTF metre kullanır; parça boyutu 2'den küçükse metre kabul edip mm'ye çevir
+      const unit = (ext === 'glb' && Math.max(...dims) < 2) ? 1000 : 1;
+      dims = dims.map(d => d * unit);
+
+      if (zUp) obj.rotation.x = -Math.PI / 2;
+      const holder = new THREE.Group();
+      holder.add(obj);
+      holder.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(holder);
+      obj.position.sub(box.getCenter(new THREE.Vector3()));
+      const size = box.getSize(new THREE.Vector3());
+      this.radius = Math.max(size.length() / 2, 1e-6);
+      this.holder = holder;
+      this.scene.add(holder);
+
+      // Model altında, boyuta göre ölçeklenen ızgara
+      const span = Math.max(size.x, size.z, size.y * 0.5);
+      const step = niceStep(span / 6);
+      const half = Math.ceil((span * 1.6) / step) * step;
+      const grid = new THREE.GridHelper(half * 2, Math.min(200, Math.round((half * 2) / step)), 0x4cc9f0, 0x284d76);
+      grid.material.transparent = true;
+      grid.material.opacity = 0.45;
+      grid.position.y = -size.y / 2 - this.radius * 0.002;
+      this.grid = grid;
+      this.scene.add(grid);
+      return { dims, step: step * unit };
+    }
+
+    _addEdges() {
+      const { THREE } = T;
+      const meshes = [];
+      let tris = 0;
+      this.holder.traverse(o => {
+        if (!o.isMesh) return;
+        meshes.push(o);
+        const g = o.geometry;
+        tris += (g.index ? g.index.count : g.attributes.position.count) / 3;
+      });
+      this.edgesAvailable = tris <= 600000;     // çok yoğun mesh'te kenar çizimi yavaşlatır
+      if (!this.edgesAvailable) return;
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x10243d, transparent: true, opacity: 0.8 });
+      meshes.forEach(m => {
+        const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 25), lineMat);
+        e.userData.edge = true;
+        m.add(e);
+      });
+    }
+
+    apply() {
+      if (!this.holder) return;
+      const { edges, wire, grid } = this.opts;
+      this.holder.traverse(o => {
+        if (o.userData.edge) o.visible = edges && this.edgesAvailable;
+        else if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.wireframe = wire; });
+      });
+      if (this.grid) this.grid.visible = grid;
+    }
+
+    setSpin(on, speed) {
+      this.controls.autoRotate = on;
+      if (speed) this.controls.autoRotateSpeed = speed;
+    }
+
+    setView(name, intro = false) {
+      const { THREE } = T;
+      const dir = new THREE.Vector3(...(VIEWS[name] || VIEWS.iso)).normalize();
+      const vHalf = THREE.MathUtils.degToRad(this.camera.fov / 2);
+      const hHalf = Math.atan(Math.tan(vHalf) * this.camera.aspect);
+      const dist = this.radius / Math.sin(Math.min(vHalf, hHalf)) * this.fit;
+      const from = intro ? dist * 1.3 : dist;
+      this.controls.target.set(0, 0, 0);
+      this.camera.position.copy(dir.multiplyScalar(from));
+      this.camera.near = dist / 200;
+      this.camera.far = dist * 50;
+      this.camera.updateProjectionMatrix();
+      this.controls.minDistance = this.radius * 0.05;
+      this.controls.maxDistance = dist * 10;
+      this.intro = intro ? { from, to: dist, t: 0, dur: 1.6 } : null;
+      this.controls.update();
+    }
+
+    snapshot(cb) {
+      if (!this.holder) return;
+      this.renderer.render(this.scene, this.camera);
+      this.canvas.toBlob(b => { if (b) cb(b); }, 'image/png');
+    }
   }
-  function fmtLen(n) {
-    const d = n >= 100 ? 0 : n >= 10 ? 1 : 2;
-    return String(+n.toFixed(d)).replace('.', ',');
+
+  // ─── Görüntüleyici (tek model, tam ekran pencere) ──
+  const ui = {
+    root: document.getElementById('viewer'),
+    stage: document.getElementById('viewerStage'),
+    title: document.getElementById('viewerTitle'),
+    dims: document.getElementById('viewerDims'),
+    msg: document.getElementById('viewerMsg'),
+    tools: document.getElementById('viewerTools'),
+    close: document.getElementById('viewerClose')
+  };
+  const KEY_VIEWS = { '0': 'iso', '1': 'front', '2': 'top', '3': 'right' };
+  let viewer = null, session = 0, snapshotCb = null, lastFocus = null;
+  const viewerOpen = () => ui.root.classList.contains('open');
+
+  function showMsg(text, isError) {
+    ui.msg.textContent = text || '';
+    ui.msg.classList.toggle('error', !!isError);
+    ui.msg.hidden = !text;
   }
 
-  function place(obj, zUp, ext) {
-    const { THREE } = T;
-    const raw = new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());
-    // Ölçüler FreeCAD eksenlerinde (X × Y × Z)
-    let dims = zUp ? [raw.x, raw.y, raw.z] : [raw.x, raw.z, raw.y];
-    // glTF metre kullanır; parça boyutu 2'den küçükse metre kabul edip mm'ye çevir
-    const unit = (ext === 'glb' && Math.max(...dims) < 2) ? 1000 : 1;
-    dims = dims.map(d => d * unit);
-
-    if (zUp) obj.rotation.x = -Math.PI / 2;
-    holder = new THREE.Group();
-    holder.add(obj);
-    holder.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(holder);
-    obj.position.sub(box.getCenter(new THREE.Vector3()));
-    const size = box.getSize(new THREE.Vector3());
-    radius = Math.max(size.length() / 2, 1e-6);
-    scene.add(holder);
-
-    // Model altında, boyuta göre ölçeklenen ızgara
-    const span = Math.max(size.x, size.z, size.y * 0.5);
-    const step = niceStep(span / 6);
-    const half = Math.ceil((span * 1.6) / step) * step;
-    grid = new THREE.GridHelper(half * 2, Math.min(200, Math.round((half * 2) / step)), 0x4cc9f0, 0x284d76);
-    grid.material.transparent = true;
-    grid.material.opacity = 0.45;
-    grid.position.y = -size.y / 2 - radius * 0.002;
-    scene.add(grid);
-
-    ui.dims.textContent = `${dims.map(fmtLen).join(' × ')} mm · ızgara ${fmtLen(step * unit)} mm`;
-  }
-
-  function addEdges() {
-    const { THREE } = T;
-    const meshes = [];
-    let tris = 0;
-    holder.traverse(o => {
-      if (!o.isMesh) return;
-      meshes.push(o);
-      const g = o.geometry;
-      tris += (g.index ? g.index.count : g.attributes.position.count) / 3;
-    });
-    edgesAvailable = tris <= 600000;     // çok yoğun mesh'te kenar çizimi yavaşlatır
-    if (!edgesAvailable) return;
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x10243d, transparent: true, opacity: 0.8 });
-    meshes.forEach(m => {
-      const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 25), lineMat);
-      e.userData.edge = true;
-      m.add(e);
-    });
-  }
-
-  function applyDisplay() {
-    holder.traverse(o => {
-      if (o.userData.edge) o.visible = edgesOn && edgesAvailable;
-      else if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.wireframe = wireOn; });
-    });
+  function syncTools() {
+    if (!viewer) return;
     const eb = ui.tools.querySelector('[data-toggle="edges"]');
-    eb.disabled = !edgesAvailable;
-    eb.title = edgesAvailable ? '' : 'Mesh çok yoğun, kenar çizimi kapalı';
-    eb.classList.toggle('on', edgesOn && edgesAvailable);
-    ui.tools.querySelector('[data-toggle="wire"]').classList.toggle('on', wireOn);
-  }
-
-  function setView(name) {
-    const { THREE } = T;
-    const dir = new THREE.Vector3(...(VIEWS[name] || VIEWS.iso)).normalize();
-    const vHalf = THREE.MathUtils.degToRad(camera.fov / 2);
-    const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
-    const dist = radius / Math.sin(Math.min(vHalf, hHalf)) * 1.08;
-    controls.target.set(0, 0, 0);
-    camera.position.copy(dir.multiplyScalar(dist));
-    camera.near = dist / 200;
-    camera.far = dist * 50;
-    camera.updateProjectionMatrix();
-    controls.minDistance = radius * 0.05;
-    controls.maxDistance = dist * 10;
-    controls.update();
+    eb.disabled = !viewer.edgesAvailable;
+    eb.title = viewer.edgesAvailable ? '' : 'Mesh çok yoğun, kenar çizimi kapalı';
+    eb.classList.toggle('on', viewer.opts.edges && viewer.edgesAvailable);
+    ui.tools.querySelector('[data-toggle="wire"]').classList.toggle('on', viewer.opts.wire);
+    ui.tools.querySelector('[data-toggle="spin"]').classList.toggle('on', viewer.controls.autoRotate);
   }
 
   async function open({ title, fileName, ext, load, onSnapshot }) {
@@ -1642,36 +1981,31 @@
     ui.root.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     ui.close.focus();
+    Sergi.setModal(true);
     showMsg('Model indiriliyor…');
-    edgesOn = true; wireOn = false;
-    if (controls) controls.autoRotate = false;
-    ui.tools.querySelector('[data-toggle="spin"]').classList.remove('on');
+    if (viewer) {
+      viewer.opts = { edges: true, wire: false, grid: true };
+      viewer.setSpin(false, 1.5);
+      syncTools();
+    }
 
     try {
-      const [buffer, lb] = await Promise.all([load(), lib()]);
+      const [buffer] = await Promise.all([load(), three()]);
       if (my !== session) return;
-      T = lb;
       showMsg('Model hazırlanıyor…');
-      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
-      ensureRenderer();
-      clearScene();
-      const { obj, zUp } = await buildObject(buffer, ext);
-      if (my !== session) { disposeTree(obj); return; }
-      let tris = 0;
-      obj.traverse(o => { if (o.isMesh) tris += o.geometry.attributes.position?.count || 0; });
-      if (!tris) {
-        disposeTree(obj);
-        throw new Error("dosyada hiç üçgen yok (boş model). FreeCAD'de Body'yi seçip yeniden dışa aktar, sonra Değiştir ile yükle.");
-      }
-      place(obj, zUp, ext);
-      addEdges();
-      applyDisplay();
-      resize();
-      setView('iso');
-      renderer.setAnimationLoop(tick);
+      await nextFrame();
+      if (!viewer) viewer = new Stage(ui.stage, { preserve: true });
+      viewer.opts = { edges: true, wire: false, grid: true };
+      viewer.setSpin(false, 1.5);
+      const info = await viewer.show(buffer, ext);
+      if (my !== session) { viewer.clear(); return; }
+      ui.dims.textContent = `${info.dims.map(fmtLen).join(' × ')} mm · ızgara ${fmtLen(info.step)} mm`;
+      syncTools();
+      viewer.setView('iso');
+      viewer.start();
       showMsg('');
-      renderer.domElement.setAttribute('tabindex', '0');
-      renderer.domElement.setAttribute('aria-label', '3D model görünümü');
+      viewer.canvas.setAttribute('tabindex', '0');
+      viewer.canvas.setAttribute('aria-label', '3D model görünümü');
     } catch (e) {
       if (my !== session) return;
       console.error(e);
@@ -1680,41 +2014,461 @@
   }
 
   function close() {
-    if (!ui.root.classList.contains('open')) return;
+    if (!viewerOpen()) return;
     session++;
     ui.root.classList.remove('open');
     ui.root.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    if (renderer) { renderer.setAnimationLoop(null); clearScene(); }
+    if (viewer) { viewer.stop(); viewer.clear(); }
     if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-
-  function snapshot() {
-    if (!snapshotCb || !renderer || !holder) return;
-    renderer.render(scene, camera);
-    renderer.domElement.toBlob(b => { if (b) snapshotCb(b); }, 'image/png');
+    Sergi.setModal(false);
   }
 
   ui.close.addEventListener('click', close);
   ui.tools.addEventListener('click', (e) => {
     const b = e.target.closest('button');
-    if (!b || !holder) return;
-    if (b.dataset.view) setView(b.dataset.view);
-    else if (b.dataset.toggle === 'edges') { edgesOn = !edgesOn; applyDisplay(); }
-    else if (b.dataset.toggle === 'wire') { wireOn = !wireOn; applyDisplay(); }
-    else if (b.dataset.toggle === 'spin') {
-      controls.autoRotate = !controls.autoRotate;
-      b.classList.toggle('on', controls.autoRotate);
-    }
-    else if (b.dataset.act === 'snap') snapshot();
+    if (!b || !viewer || !viewer.holder) return;
+    if (b.dataset.view) viewer.setView(b.dataset.view);
+    else if (b.dataset.toggle === 'edges') { viewer.opts.edges = !viewer.opts.edges; viewer.apply(); }
+    else if (b.dataset.toggle === 'wire') { viewer.opts.wire = !viewer.opts.wire; viewer.apply(); }
+    else if (b.dataset.toggle === 'spin') viewer.setSpin(!viewer.controls.autoRotate);
+    else if (b.dataset.act === 'snap' && snapshotCb) viewer.snapshot(snapshotCb);
+    syncTools();
   });
   document.addEventListener('keydown', (e) => {
-    if (!ui.root.classList.contains('open')) return;
+    if (!viewerOpen()) return;
     if (e.key === 'Escape') { e.preventDefault(); close(); return; }
-    if (KEY_VIEWS[e.key] && holder && !e.ctrlKey && !e.metaKey && !e.altKey) setView(KEY_VIEWS[e.key]);
+    if (KEY_VIEWS[e.key] && viewer && viewer.holder && !e.ctrlKey && !e.metaKey && !e.altKey) viewer.setView(KEY_VIEWS[e.key]);
   });
 
+  // ─── Sergi: yüklenen tüm modelleri sırayla gösterir ──
+  const Sergi = (() => {
+    const $ = id => document.getElementById(id);
+    const root = $('sergi');
+    if (!root) return { refresh() {}, setModal() {} };
+    const el = {
+      stage: $('sergiStage'), msg: $('sergiMsg'), count: $('sergiCount'), state: $('sergiState'),
+      barCount: $('sergiBarCount'), plate: $('sergiPlate'), pTitle: $('plateTitle'), pFile: $('plateFile'),
+      pLevel: $('plateLevel'), pDims: $('plateDims'), pStatus: $('plateStatus'), progress: $('sergiProgress'),
+      settings: $('sergiSettings'), empty: $('sergiEmpty'), emptyText: $('sergiEmptyText'), filterOff: $('sergiFilterOff'),
+      play: root.querySelector('[data-sg="play"]'), fs: root.querySelector('[data-sg="fs"]'),
+      setBtn: root.querySelector('[data-sg="settings"]')
+    };
+    const ICON = {
+      play: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4l8.5-5.2z" fill="currentColor"/></svg>',
+      pause: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.8h3v10.4H4zm5 0h3v10.4H9z" fill="currentColor"/></svg>',
+      fs: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6V2h4m4 0h4v4m0 4v4h-4m-4 0H2v-4"/></svg>',
+      fsExit: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 2v4H2m12 0h-4V2m0 12v-4h4M2 10h4v4"/></svg>'
+    };
+
+    // Ayarlar bu tarayıcıda saklanır (cihaza özel görünüm tercihi)
+    const PREF_KEY = 'cadlist.sergi.v1';
+    const SPEEDS = { slow: 1, normal: 2.5, fast: 5 };
+    const DURS = [5, 10, 20, 30, 60];
+    const DEFAULTS = { dur: 10, order: 'seq', spin: !RM, speed: 'normal', edges: true, wire: false, grid: true, info: true, onlyDone: false, collapsed: false };
+    const prefs = { ...DEFAULTS };
+    try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* depolama kapalı */ }
+    if (!DURS.includes(prefs.dur)) prefs.dur = DEFAULTS.dur;
+    if (!SPEEDS[prefs.speed]) prefs.speed = DEFAULTS.speed;
+    if (prefs.order !== 'rand') prefs.order = 'seq';
+    const save = () => { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* depolama kapalı */ } };
+
+    let stage = null;
+    let items = [], order = [], pos = -1;
+    let current = null;        // sahnedeki model {key, v, info}
+    let want = null;           // yüklenmekte olan model {key, v}
+    let nav = 0, transitioning = false;
+    let playing = true, elapsed = 0, dragging = false;
+    let modalOpen = false, inView = true, idleTimer = 0;
+    const failed = new Set();
+
+    const pad = n => String(n).padStart(2, '0');
+    const itemOf = key => items.find(i => i.key === key);
+    const isFs = () => document.fullscreenElement === root || root.classList.contains('pseudo-fs');
+
+    function computeItems() {
+      const all = (window.cadReady && window.exhibitItems) ? window.exhibitItems() : [];
+      const usable = all.filter(i => !failed.has(i.key + '|' + i.model.v));
+      return { all: all.length, usable: usable.length, shown: prefs.onlyDone ? usable.filter(i => i.done) : usable };
+    }
+
+    function shuffled(keys, avoidFirst) {
+      const a = keys.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      if (a.length > 1 && a[0] === avoidFirst) [a[0], a[1]] = [a[1], a[0]];
+      return a;
+    }
+    function buildOrder() {
+      const keys = items.map(i => i.key);
+      // geçiş sürüyorsa gelmekte olan model esas alınır
+      const anchor = (transitioning && want) ? want.key : current?.key;
+      if (prefs.order === 'rand') {
+        const head = anchor && keys.includes(anchor) ? [anchor] : [];
+        order = head.concat(shuffled(keys.filter(k => !head.includes(k))));
+      } else order = keys;
+      pos = anchor ? order.indexOf(anchor) : -1;
+    }
+
+    function next() {
+      if (!order.length) return;
+      let p = pos + 1;
+      if (p >= order.length) {
+        p = 0;
+        if (prefs.order === 'rand' && order.length > 2) order = shuffled(order, current?.key);
+      }
+      showAt(p);
+    }
+    function prev() {
+      if (order.length) showAt(pos - 1 < 0 ? order.length - 1 : pos - 1);
+    }
+
+    async function ensureStage() {
+      if (stage) return stage;
+      await three();
+      if (stage) return stage;
+      stage = new Stage(el.stage, { alpha: true, maxPixelRatio: 1.75, fit: 1.32 });
+      stage.canvas.setAttribute('aria-hidden', 'true');
+      stage.controls.addEventListener('start', () => { dragging = true; });
+      stage.controls.addEventListener('end', () => { dragging = false; elapsed = 0; });
+      stage.onFrame = onFrame;
+      applyDisplay();
+      setInteractive(isFs());
+      return stage;
+    }
+
+    function setMsg(text) {
+      el.msg.textContent = text || '';
+      el.msg.hidden = !text;
+    }
+
+    async function showAt(p) {
+      if (!order.length) return;
+      const my = ++nav;
+      pos = ((p % order.length) + order.length) % order.length;
+      const it = itemOf(order[pos]);
+      if (!it) return;
+      want = { key: it.key, v: it.model.v };
+      transitioning = true;
+      elapsed = 0;
+      updateCount();
+      const slow = setTimeout(() => {
+        if (my !== nav) return;
+        if (current) el.state.textContent = 'yükleniyor…';
+        else setMsg('Sergi hazırlanıyor…');
+      }, 350);
+      const done = () => { clearTimeout(slow); el.state.textContent = ''; };
+
+      const bufP = window.loadModelBytes(it.key);
+      try { await ensureStage(); }
+      catch (e) {
+        bufP.catch(() => {});
+        done();
+        if (my === nav) { transitioning = false; setMsg(e.message); }
+        return;
+      }
+      let buffer;
+      try { buffer = await bufP; }
+      catch (e) { done(); if (my === nav) onFail(it, e); return; }
+      if (my !== nav) { done(); return; }
+
+      const fade = !!stage.holder && !RM;
+      if (fade) {
+        stage.canvas.classList.add('fade');
+        await wait(330);
+        if (my !== nav) { done(); return; }
+      }
+      let info;
+      try { info = await stage.show(buffer, it.model.ext); }
+      catch (e) { done(); stage.canvas.classList.remove('fade'); if (my === nav) onFail(it, e); return; }
+      done();
+      if (my !== nav) return;
+
+      current = { key: it.key, v: it.model.v, info };
+      want = null;
+      stage.setView('iso', !RM);
+      renderPlate(it);
+      setMsg('');
+      stage.canvas.classList.remove('fade');
+      transitioning = false;
+      elapsed = 0;
+      updateCount();
+      prefetch();
+      updateRun();
+    }
+
+    function onFail(it, e) {
+      console.warn('Sergi: model atlandı →', it.key, e);
+      failed.add(it.key + '|' + it.model.v);
+      transitioning = false;
+      want = null;
+      refresh();
+    }
+
+    function prefetch() {
+      if (order.length < 2) return;
+      const k = order[(pos + 1) % order.length];
+      if (k && k !== current?.key) window.loadModelBytes(k).catch(() => {});
+    }
+
+    function onFrame(dt) {
+      if (playing && !dragging && !transitioning && current && order.length > 1) {
+        elapsed += dt;
+        if (elapsed >= prefs.dur) { elapsed = 0; next(); }
+      }
+      el.progress.style.transform = `scaleX(${order.length > 1 ? Math.min(1, elapsed / prefs.dur) : 0})`;
+    }
+
+    function updateRun() {
+      if (!stage) return;
+      const run = window.cadReady && !prefs.collapsed && items.length > 0 && !modalOpen
+        && !document.hidden && (inView || isFs());
+      if (run) stage.start(); else stage.stop();
+    }
+
+    function stopShow() {
+      nav++;
+      transitioning = false;
+      current = null; want = null; pos = -1;
+      if (stage) { stage.clear(); stage.stop(); }
+      el.plate.hidden = true;
+      setMsg('');
+    }
+
+    function renderPlate(it) {
+      el.pTitle.textContent = it.title;
+      el.pFile.textContent = it.model.name;
+      el.pLevel.textContent = it.level || '—';
+      el.pDims.textContent = current && current.key === it.key ? current.info.dims.map(fmtLen).join(' × ') : '—';
+      el.pStatus.textContent = '';
+      const dot = document.createElement('span');
+      dot.className = 'plate-dot';
+      dot.style.background = `var(--s${it.status})`;
+      el.pStatus.append(dot, document.createTextNode(it.statusLabel));
+      if (it.rating != null) {
+        const r = document.createElement('b');
+        r.textContent = ' ★ ' + it.rating.toFixed(1);
+        el.pStatus.append(r);
+      }
+      el.plate.hidden = !prefs.info;
+    }
+
+    function updateCount() {
+      el.count.textContent = items.length ? `${pad(Math.max(pos, 0) + 1)} / ${pad(items.length)}` : '';
+    }
+
+    function applyDisplay() {
+      el.plate.hidden = !prefs.info || !current;
+      if (!stage) return;
+      stage.opts = { edges: prefs.edges, wire: prefs.wire, grid: prefs.grid };
+      stage.apply();
+      stage.setSpin(prefs.spin, SPEEDS[prefs.speed]);
+    }
+
+    function syncControls() {
+      root.querySelectorAll('[data-set]').forEach(b => {
+        const k = b.dataset.set, v = b.dataset.val;
+        const on = v === undefined ? !!prefs[k] : String(prefs[k]) === v;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', String(on));
+        if (k === 'speed') b.disabled = !prefs.spin;
+      });
+      el.play.innerHTML = playing ? ICON.pause : ICON.play;
+      el.play.setAttribute('aria-label', playing ? 'Duraklat' : 'Oynat');
+      el.play.title = playing ? 'Duraklat (boşluk)' : 'Oynat (boşluk)';
+      const open = root.classList.contains('settings-open');
+      el.setBtn.setAttribute('aria-expanded', String(open));
+      el.setBtn.classList.toggle('on', open);
+    }
+
+    function renderChrome(st) {
+      root.hidden = !window.cadReady;
+      root.classList.toggle('collapsed', !!prefs.collapsed);
+      const empty = !items.length;
+      root.classList.toggle('is-empty', empty);
+      root.classList.toggle('single', items.length <= 1);
+      el.empty.hidden = !empty || !!prefs.collapsed;
+      const filterBlocks = prefs.onlyDone && st.usable > 0;
+      el.emptyText.textContent = st.all === 0
+        ? 'Sergi boş. Bir parçanın notlarından 3D model yüklediğinde burada sırayla sergilenir.'
+        : filterBlocks ? 'Tamamlanan parçalarda henüz 3D model yok.'
+        : '3D modeller açılamadı. Parçaların notlarından modelleri kontrol et.';
+      el.filterOff.hidden = !filterBlocks;
+      el.barCount.textContent = st.all ? `· ${items.length} model` : '· boş';
+      updateCount();
+      syncControls();
+    }
+
+    function refresh() {
+      const st = computeItems();
+      items = st.shown;
+      const keys = items.map(i => i.key);
+      const sameSet = keys.length === order.length && keys.every(k => order.includes(k));
+      if (!sameSet) {
+        const keepPos = pos;
+        buildOrder();
+        // gösterilen model listeden çıktıysa, yerine geleni göster
+        if (current && pos < 0) pos = Math.min(Math.max(keepPos, 0), order.length) - 1;
+      }
+      renderChrome(st);
+      if (!items.length) { stopShow(); return; }
+      if (prefs.collapsed) { updateRun(); return; }
+      if (transitioning && want) {
+        const w = itemOf(want.key);
+        if (w && w.model.v === want.v) { updateRun(); return; }
+        // gelmekte olan model kaldırıldı/değişti → yarım kalan geçişi iptal et
+        nav++; transitioning = false; want = null;
+        el.state.textContent = '';
+        if (stage) stage.canvas.classList.remove('fade');
+      }
+      const cur = current && itemOf(current.key);
+      if (!current) showAt(Math.max(pos, 0));
+      else if (!cur) next();
+      else {
+        pos = order.indexOf(cur.key);
+        if (cur.model.v !== current.v) showAt(pos);
+        else { renderPlate(cur); updateCount(); }
+      }
+      updateRun();
+    }
+
+    // ── Tam ekran ──
+    async function toggleFs() {
+      if (isFs()) return exitFs();
+      if (root.requestFullscreen) {
+        try { await root.requestFullscreen(); return; } catch (e) { /* desteklenmiyor → yedek */ }
+      }
+      root.classList.add('pseudo-fs');
+      document.body.style.overflow = 'hidden';
+      onFsChange();
+    }
+    async function exitFs() {
+      if (document.fullscreenElement === root) {
+        try { await document.exitFullscreen(); } catch (e) { /* zaten çıkıldı */ }
+      } else if (root.classList.contains('pseudo-fs')) {
+        root.classList.remove('pseudo-fs');
+        document.body.style.overflow = '';
+        onFsChange();
+      }
+    }
+    function setInteractive(fs) {
+      if (!stage) return;
+      // Sayfa içinde: tekerlek ve dokunmatik kaydırma sayfayı kaydırır
+      stage.controls.enableZoom = fs;
+      stage.canvas.style.touchAction = fs ? 'none' : 'pan-y';
+    }
+    function onFsChange() {
+      const fs = isFs();
+      root.classList.toggle('is-fs', fs);
+      el.fs.innerHTML = fs ? ICON.fsExit : ICON.fs;
+      el.fs.setAttribute('aria-label', fs ? 'Tam ekrandan çık' : 'Tam ekran');
+      el.fs.title = fs ? 'Tam ekrandan çık' : 'Tam ekran';
+      setInteractive(fs);
+      if (fs) wake();
+      else { clearTimeout(idleTimer); root.classList.remove('idle'); }
+      updateRun();
+    }
+    function wake() {
+      root.classList.remove('idle');
+      clearTimeout(idleTimer);
+      if (isFs()) idleTimer = setTimeout(() => {
+        if (!root.classList.contains('settings-open')) root.classList.add('idle');
+      }, 2500);
+    }
+
+    function setCollapsed(c) {
+      if (c && isFs()) exitFs();
+      prefs.collapsed = c;
+      save();
+      if (c) {
+        root.classList.remove('settings-open');
+        if (transitioning) { nav++; transitioning = false; want = null; }
+      }
+      refresh();
+    }
+
+    async function gotoPart() {
+      const key = current?.key;
+      if (!key) return;
+      if (isFs()) {
+        await exitFs();
+        // tarayıcı tam ekrandan çıkınca eski kaydırma konumunu geri yükler; onu bekle
+        await nextFrame(); await wait(150);
+      }
+      const li = document.querySelector(`li[data-key="${CSS.escape(key)}"]`);
+      if (!li) return;
+      li.querySelector('.blog-section')?.classList.add('open');
+      li.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+      li.classList.add('flash');
+      setTimeout(() => li.classList.remove('flash'), 1800);
+    }
+
+    // ── Olaylar ──
+    root.addEventListener('click', (e) => {
+      const set = e.target.closest('[data-set]');
+      if (set) {
+        const k = set.dataset.set, v = set.dataset.val;
+        if (v === undefined) prefs[k] = !prefs[k];
+        else prefs[k] = k === 'dur' ? Number(v) : v;
+        save();
+        syncControls();
+        if (k === 'order') { buildOrder(); updateCount(); prefetch(); }
+        else if (k === 'onlyDone') refresh();
+        else if (k !== 'dur') applyDisplay();
+        return;
+      }
+      const b = e.target.closest('[data-sg]');
+      if (!b) return;
+      switch (b.dataset.sg) {
+        case 'prev': prev(); break;
+        case 'next': next(); break;
+        case 'play': playing = !playing; syncControls(); break;
+        case 'settings': root.classList.toggle('settings-open'); syncControls(); break;
+        case 'fs': toggleFs(); break;
+        case 'collapse': setCollapsed(true); break;
+        case 'expand': setCollapsed(false); break;
+        case 'goto': gotoPart(); break;
+        case 'filter-off': prefs.onlyDone = false; save(); syncControls(); refresh(); break;
+      }
+      wake();
+    });
+    // Sayfa içindeyken dokunmatik sürükleme modeli değil sayfayı kaydırsın
+    el.stage.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' && !isFs() && stage && e.target === stage.canvas) e.stopPropagation();
+    }, true);
+    root.addEventListener('pointermove', wake);
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('visibilitychange', updateRun);
+    document.addEventListener('keydown', (e) => {
+      if (viewerOpen() || root.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (!isFs() && !root.contains(document.activeElement)) return;
+      if (e.key === 'ArrowRight') next();
+      else if (e.key === 'ArrowLeft') prev();
+      else if (e.key === ' ' && isFs() && !e.target.closest('button')) { e.preventDefault(); playing = !playing; syncControls(); }
+      else if (e.key === 'Escape' && root.classList.contains('pseudo-fs')) exitFs();
+      else return;
+      wake();
+    });
+    new IntersectionObserver((es) => {
+      inView = es[es.length - 1].isIntersecting;
+      updateRun();
+    }, { threshold: 0.05 }).observe(root);
+
+    syncControls();
+    refresh();
+
+    return {
+      refresh,
+      setModal(open) { modalOpen = open; updateRun(); },
+      // test / hata ayıklama için durum özeti
+      debug: () => ({ order: order.slice(), pos, current: current && { key: current.key, v: current.v }, playing, elapsed, running: !!stage?.running, prefs: { ...prefs } })
+    };
+  })();
+
   window.CadViewer = { open, close, preload: () => { lib().catch(() => {}); } };
+  window.CadSergi = Sergi;
 </script>
 
 </body>
